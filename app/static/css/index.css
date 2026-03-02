@@ -22,3 +22,11 @@ textarea {
 .iris-shadow-main {
     box-shadow: 5px 5px 0px 0px rgba(0, 0, 0, 0.2);
 }
+
+.iris-rounded-img-exist {
+    border-radius: 16px 16px 16px 450px;
+}
+
+.iris-bg-gradient-default {
+    background: linear-gradient(120deg, var(--primary-color) 30%, white 30% 70%, var(--primary-color) 70%);
+}

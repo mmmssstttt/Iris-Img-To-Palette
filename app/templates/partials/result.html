@@ -45,18 +45,18 @@
       <span class="text-2xl text-[var(--primary-color-two)]">GO</span>
     </button>
 
-    <div class="w-full grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2">
+    <div class="w-full grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
       {% for c in visible_palette %}
         <div
-          class="palette-swatch flex h-16 sm:h-22 min-w-0 items-center justify-center rounded-xl px-2 text-center text-lg tracking-wide"
+          class="palette-swatch flex h-16 sm:h-22 min-w-0 items-center justify-center rounded-xl px-2 text-center text-lg tracking-wide iris-shadow-main"
           data-hex="{{ c.hex }}"
-          style="background-color: {{ c.hex }};"
+          style="background: linear-gradient(125deg, {{ c.hex }} 50%, white 50%);"
         >
           {{ c.hex|replace('#', '')|upper }}
         </div>
       {% endfor %}
       {% for _ in range(12 - (visible_palette|length)) %}
-        <div class="h-16 sm:h-22 rounded-xl bg-[var(--primary-color)]"></div>
+        <div class="h-16 sm:h-22 rounded-xl bg-white"></div>
       {% endfor %}
     </div>
   </div>
