@@ -7,7 +7,7 @@ from typing import Any
 from fastapi import UploadFile
 from fastapi.concurrency import run_in_threadpool
 
-from scripts.extract_colors import extract_dominant_colors
+from .core.extract_colors import extract_dominant_colors
 
 from .config import settings
 from .storage import PaletteResult, clear_results, get_result, list_image_paths, list_results, save_result

@@ -1,5 +1,6 @@
 import math
 
+
 def _srgb_channel_to_linear(c: float) -> float:
     if c <= 0.04045:
         return c / 12.92
@@ -49,15 +50,3 @@ def hex_to_oklch(hex_str: str) -> tuple[float, float, float]:
     r, g, b = _hex_to_linear_rgb(hex_str)
     L, a, b = _linear_rgb_to_oklab(r, g, b)
     return oklab_to_oklch(L, a, b)
-
-if __name__ == "__main__":
-    # Hex -> OKLCH Already include OKLAB -> OKLCH testing
-    hex_val = "#929cf9"
-    l1, c1, h1 = hex_to_oklch(hex_val)
-    print(f"HEX {hex_val} -> L: {l1:.4f}, C: {c1:.4f}, h: {h1:.2f}°")
-
-    # Edge Situation
-    black_hex = "#000000"
-    l3, c3, h3 = hex_to_oklch(black_hex)
-    print(f"HEX {black_hex} -> L: {l3:.4f}, C: {c3:.4f}, h: {h3:.2f}°")
-    

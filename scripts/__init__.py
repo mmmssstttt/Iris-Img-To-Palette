@@ -1,2 +1,2 @@
-"""Utility scripts (packaged for import)."""
+"""CLI wrappers for app functionality."""
 
