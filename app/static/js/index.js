@@ -1,323 +1,49 @@
-
-function isTouchDevice() {
-    return window.matchMedia("(hover: none)").matches || "ontouchstart" in window;
-}
-
-const MAX_FILES_PER_BATCH = 1000;
-
-function getStoredTheme() {
-    try {
-        const theme = localStorage.getItem("iris-theme");
-        return theme === "light" ? "light" : "dark";
-    } catch {
-        return "dark";
-    }
-}
-
-function applyTheme(theme) {
-    const safeTheme = theme === "dark" ? "dark" : "light";
-    const uploadArea = getUploadAreaElement();
-    const previousUploadBackground = uploadArea ? String(window.getComputedStyle(uploadArea).background || "").trim() : "";
-
-    document.documentElement.setAttribute("data-theme", safeTheme);
-    try {
-        localStorage.setItem("iris-theme", safeTheme);
-    } catch {
-        // ignore storage failures
-    }
-
-    if (uploadArea && previousUploadBackground) {
-        const fadeLayer = document.createElement("div");
-        fadeLayer.className = "iris-upload-theme-fade";
-        fadeLayer.style.background = previousUploadBackground;
-        uploadArea.insertBefore(fadeLayer, uploadArea.firstChild);
-        requestAnimationFrame(() => {
-            fadeLayer.style.opacity = "0";
-        });
-        window.setTimeout(() => {
-            fadeLayer.remove();
-        }, 720);
-    }
-
-    const uploaderData = getUploaderData();
-    if (uploaderData) uploaderData.isDark = safeTheme === "dark";
-}
-
 let lastPointerClientX = -1;
 let lastPointerClientY = -1;
 
-function parseHexColor(value) {
-    const hex = String(value || "").trim().replace("#", "");
-    if (!/^[0-9a-fA-F]{6}$/.test(hex)) return null;
-    return {
-        hex,
-        r: parseInt(hex.slice(0, 2), 16),
-        g: parseInt(hex.slice(2, 4), 16),
-        b: parseInt(hex.slice(4, 6), 16),
-    };
-}
-
-function applySwatchTextContrast(root = document) {
-    const swatches = root.querySelectorAll(".palette-swatch[data-hex]");
-    swatches.forEach((swatch) => {
-        const label = swatch.querySelector(".palette-label");
-        if (!label) return;
-        label.style.color = "#E0E0E0";
-        label.style.backgroundImage = "none";
-        label.style.webkitBackgroundClip = "initial";
-        label.style.backgroundClip = "initial";
-        label.style.textShadow = "0 1px 0 rgba(41, 41, 41, 0.6), 1px 1px 0 rgba(41, 41, 41, 0.45)";
-    });
-}
-
-function getUploadAreaElement() {
-    return document.getElementById("upload-area");
-}
-
-function showTransientNotice(message) {
-    const text = String(message || "").trim();
-    if (!text) return;
-
-    const existing = document.querySelector(".iris-toast");
-    if (existing) existing.remove();
-
-    const toast = document.createElement("div");
-    toast.className = "iris-toast";
-    toast.textContent = text;
-    document.body.appendChild(toast);
-
-    requestAnimationFrame(() => {
-        toast.classList.add("show");
-    });
-    window.setTimeout(() => {
-        toast.classList.remove("show");
-        window.setTimeout(() => toast.remove(), 220);
-    }, 1200);
-}
-
-function getDefaultUploadGradient() {
-    return "linear-gradient(120deg, var(--primary-color) 30%, var(--mid-band) 30% 70%, var(--primary-color) 70%)";
-}
-
-function setUploadAreaBackground(nextBackground) {
-    const uploadArea = getUploadAreaElement();
-    if (!uploadArea) return;
-
-    const next = String(nextBackground || "").trim();
-    const currentInline = String(uploadArea.style.background || "").trim();
-    const currentComputed = String(window.getComputedStyle(uploadArea).background || "").trim();
-    const previous = currentInline || currentComputed;
-
-    uploadArea.querySelectorAll(".iris-upload-gradient-fade").forEach((node) => node.remove());
-
-    if (!previous || previous === next) {
-        uploadArea.style.background = next;
-        return;
-    }
-
-    const fadeLayer = document.createElement("div");
-    fadeLayer.className = "iris-upload-gradient-fade";
-    fadeLayer.style.background = previous;
-    uploadArea.insertBefore(fadeLayer, uploadArea.firstChild);
-
-    uploadArea.style.background = next;
-    requestAnimationFrame(() => {
-        fadeLayer.style.opacity = "0";
-    });
-    window.setTimeout(() => {
-        fadeLayer.remove();
-    }, 320);
-}
-
-function resetUploadAreaBackground() {
-    setUploadAreaBackground(getDefaultUploadGradient());
-}
-
-function readPaletteDataFromDom(root = document) {
-    const node = root.querySelector("#palettes-data");
-    if (!node) return null;
-    try {
-        const parsed = JSON.parse(node.textContent || "[]");
-        return Array.isArray(parsed) ? parsed : null;
-    } catch {
-        return null;
-    }
-}
-
-function renderPaletteGrid(container, palette, targetCount = 10, options = {}) {
-    if (!container) return;
-    const commit = Boolean(options.commit);
-    const keepAtLeast = Math.max(0, Number(options.keepAtLeast || 0));
-    const fadeMs = 300;
-    const sourceColors = Array.isArray(palette) ? palette : [];
-    const colors = sourceColors.slice(0, targetCount);
-    const baseTarget = Math.max(1, targetCount);
-    const previewTarget = Math.max(baseTarget, sourceColors.length);
-    const keepCount = commit ? Math.max(baseTarget, keepAtLeast) : Math.max(previewTarget, keepAtLeast);
-    const finalCount = commit ? baseTarget : previewTarget;
-
-    while (container.children.length < keepCount) {
-        const node = document.createElement("div");
-        node.className = "h-16 sm:h-22 rounded-xl iris-swatch-empty iris-swatch-fade-in";
-        container.appendChild(node);
-        window.setTimeout(() => node.classList.remove("iris-swatch-fade-in"), fadeMs);
-    }
-
-    for (let i = 0; i < keepCount; i += 1) {
-        const node = container.children[i];
-        if (!(node instanceof HTMLElement)) continue;
-
-        if (i < baseTarget && i < colors.length) {
-            const hex = String(colors[i]?.hex || "");
-            const text = hex.replace("#", "").toUpperCase();
-            node.className = "palette-swatch flex h-16 sm:h-22 min-w-0 items-center justify-center rounded-xl px-2 text-center text-lg tracking-wide iris-shadow-main";
-            node.setAttribute("data-hex", hex);
-            node.style.setProperty("--swatch-left", hex);
-            node.innerHTML = `<span class="palette-label">${text}</span>`;
-            node.classList.remove("iris-swatch-dim", "iris-swatch-fade-out");
-        } else if (i < baseTarget) {
-            node.className = "h-16 sm:h-22 rounded-xl iris-swatch-empty";
-            node.removeAttribute("data-hex");
-            node.style.removeProperty("--swatch-left");
-            node.innerHTML = "";
-            node.classList.remove("iris-swatch-dim", "iris-swatch-fade-out");
-        } else {
-            if (i < sourceColors.length) {
-                const hex = String(sourceColors[i]?.hex || "");
-                const text = hex.replace("#", "").toUpperCase();
-                node.className = "palette-swatch flex h-16 sm:h-22 min-w-0 items-center justify-center rounded-xl px-2 text-center text-lg tracking-wide iris-shadow-main";
-                node.setAttribute("data-hex", hex);
-                node.style.setProperty("--swatch-left", hex);
-                node.innerHTML = `<span class="palette-label">${text}</span>`;
-                node.classList.add("iris-swatch-dim");
-                node.classList.remove("iris-swatch-fade-out");
-            } else {
-                node.classList.remove("iris-swatch-dim");
-                node.classList.add("iris-swatch-fade-out");
-            }
-        }
-    }
-
-    if (container.children.length > finalCount) {
-        for (let i = finalCount; i < container.children.length; i += 1) {
-            const node = container.children[i];
-            if (!(node instanceof HTMLElement)) continue;
-            // Commit mode: overflow swatches should directly fade out.
-            // Preview mode already handles "colored -> dim", "empty -> fade out".
-            node.classList.remove("iris-swatch-dim");
-            node.classList.add("iris-swatch-fade-out");
-        }
-        window.setTimeout(() => {
-            while (container.children.length > finalCount) {
-                container.removeChild(container.lastElementChild);
-            }
-            applySwatchTextContrast(container);
-        }, fadeMs);
-        return;
-    }
-
-    applySwatchTextContrast(container);
-}
-
-function updateSwatchGridLayout(container, count) {
-    if (!container) return;
-    container.classList.remove("grid-cols-5", "grid-cols-6");
-    container.classList.add(count >= 11 ? "grid-cols-6" : "grid-cols-5");
-}
-
-function getUploaderData() {
-    const uploaderRoot = document.querySelector("[x-data]");
-    return uploaderRoot?._x_dataStack?.[0];
-}
-
-function applyPaletteBackgroundToUploadArea(root = document) {
-    const uploadArea = getUploadAreaElement();
-    if (!uploadArea) return;
-
-    const uploaderData = getUploaderData();
-    const currentPalette = uploaderData?.extractedPalettes?.[uploaderData.currentIndex] || [];
-    const colors = currentPalette
-        .map((item) => String(item?.hex || "").trim())
-        .filter((hex) => /^#?[0-9a-fA-F]{6}$/.test(hex))
-        .map((hex) => (hex.startsWith("#") ? hex : `#${hex}`));
-
-    if (!colors.length) {
-        resetUploadAreaBackground();
-        return;
-    }
-
-    const n = colors.length;
-
-    // split colors to left/right sides
-    const leftCount = Math.ceil(n / 2);
-    const rightCount = n - leftCount;
-
-    const leftColors = colors.slice(0, leftCount);
-    const rightColors = colors.slice(leftCount);
-
-    // keep center white band from 30%–70% (same as CSS)
-    const midStart = 30;
-    const midEnd = 70;
-
-    const gradientStops = [];
-
-    // left side: 0%–30%
-    if (leftCount > 0) {
-        leftColors.forEach((color, index) => {
-            const start = (midStart * index) / leftCount;
-            const end = (midStart * (index + 1)) / leftCount;
-            gradientStops.push(`${color} ${start}% ${end}%`);
-        });
-    }
-
-    // middle transparent band; center color handled by .iris-upload-mid-band
-    gradientStops.push(`transparent ${midStart}% ${midEnd}%`);
-
-    // right side: 70%–100%
-    if (rightCount > 0) {
-        rightColors.forEach((color, index) => {
-            const start = midEnd + ((100 - midEnd) * index) / rightCount;
-            const end = midEnd + ((100 - midEnd) * (index + 1)) / rightCount;
-            gradientStops.push(`${color} ${start}% ${end}%`);
-        });
-    }
-
-    setUploadAreaBackground(`linear-gradient(120deg, ${gradientStops.join(", ")})`);
-}
-
 function uploader() {
     return {
+        // --- Theme ---
         isDark: getStoredTheme() === "dark",
         themeTransitioning: false,
-        nColors: "10",
+
+        // --- Preview / Upload ---
         previewUrl: "",
         previewUrls: [],
         files: [],
         totalFiles: 0,
         currentIndex: 0,
-        extractedPalettes: [],
-        paletteRenderTimer: null,
         previewAnimating: false,
         previewSlideClass: "",
-        isWorking: false,
         dropActive: false,
-        showExport: false,
-        holdDelayTimer: null,
-        holdRepeatTimer: null,
+        previewDragging: false,
+        previewDragStartX: 0,
+        previewDragDeltaX: 0,
         navHoldDelayTimer: null,
         navHoldRepeatTimer: null,
         lastNavTapAt: 0,
         lastNavDirection: 0,
-        previewDragging: false,
-        previewDragStartX: 0,
-        previewDragDeltaX: 0,
+
+        // --- Palette ---
+        nColors: "10",
+        extractedPalettes: [],
+        paletteRenderTimer: null,
+        navPaletteRenderTimer: null,
+        holdDelayTimer: null,
+        holdRepeatTimer: null,
+        preSubmitDesktopCount: 0,
+        preSubmitMobileCount: 0,
+
+        // --- Keyboard ---
         keyboardHoldDirection: 0,
         keyboardHoldDelayTimer: null,
         keyboardHoldRepeatTimer: null,
-        navPaletteRenderTimer: null,
-        preSubmitDesktopCount: 0,
-        preSubmitMobileCount: 0,
         lastKeyTapAt: 0,
+
+        // --- Misc UI ---
+        isWorking: false,
+        showExport: false,
+
         onUploadAreaClick(e) {
             const target = e?.target;
             if (target?.closest(".iris-nav-btn")) return;
@@ -725,7 +451,6 @@ document.body.addEventListener("htmx:afterSwap", (event) => {
             const keepDesktop = alpineData.preSubmitDesktopCount || 0;
             const keepMobile = alpineData.preSubmitMobileCount || 0;
 
-            // Seed the swapped DOM with previous colors, then transition to new result.
             if (desktop) {
                 updateSwatchGridLayout(desktop, n);
                 renderPaletteGrid(desktop, previousPalette, n, { keepAtLeast: keepDesktop });
@@ -755,8 +480,6 @@ document.body.addEventListener("htmx:beforeRequest", (event) => {
         const inputCount = inputEl?.files?.length || 0;
         const memoryCount = alpineData.files?.length || 0;
 
-        // Some browsers clear <input type=file> when the picker is canceled.
-        // Restore from in-memory files so the form field "images" is always present.
         if (inputEl && inputCount === 0 && memoryCount > 0) {
             const dt = new DataTransfer();
             alpineData.files.forEach((file) => dt.items.add(file));
