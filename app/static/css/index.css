@@ -1,15 +1,29 @@
 :root {
     --app-font: "Prosto One", cursive;
+    --palette-shift-duration: 0.3s;
 
-    --primary-color: #424242;
-    --primary-color-two: #9f9f9f;
-    --primary-color-three: #ababab;
+    --primary-color: #ececec;
+    --primary-color-two: #8f8f8f;
+    --primary-color-three: #7f7f7f;
     --primary-color-four: #d3d3d3;
+    --text-color: #262626;
+    --panel-bg: #f4f4f4;
+    --swatch-empty: #ededed;
+    --mid-band: #ffffff;
+    --action-btn-bg: #f3f3f3;
+    --action-btn-fg: #8f8f8f;
+    --swatch-right-bg: #f7f7f7;
+    --swatch-split-right: #ffffff;
+    --extract-color: #555555;
 }
 
 html,
 body {
     font-family: var(--app-font);
+    height: 100%;
+    color: var(--text-color);
+    background: var(--panel-bg);
+    transition: background-color 0.7s ease, color 0.7s ease;
 }
 
 button,
@@ -24,9 +38,441 @@ textarea {
 }
 
 .iris-rounded-img-exist {
-    border-radius: 16px 16px 16px 450px;
+    border-radius: 16px 16px 16px 220px;
 }
 
 .iris-bg-gradient-default {
-    background: linear-gradient(120deg, var(--primary-color) 30%, white 30% 70%, var(--primary-color) 70%);
+    background: linear-gradient(120deg, var(--primary-color) 30%, var(--mid-band) 30% 70%, var(--primary-color) 70%);
+}
+
+.iris-upload-idle {
+    position: relative;
+    background: linear-gradient(120deg, var(--primary-color) 30%, var(--mid-band) 30% 70%, var(--primary-color) 70%);
+    transition: background 0.7s ease, background-color 0.7s ease, border-color 0.7s ease, box-shadow 0.7s ease;
+}
+
+.iris-upload-idle::before {
+    content: none;
+}
+
+.iris-upload-idle::after {
+    content: none;
+}
+
+.iris-upload-mid-band {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 30%;
+    right: 30%;
+    background: transparent;
+    pointer-events: none;
+    transition: background-color 0.7s ease, opacity 0.7s ease;
+}
+
+.iris-upload-gradient-fade {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 1;
+    transition: opacity var(--palette-shift-duration) ease;
+}
+
+.iris-upload-theme-fade {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 1;
+    transition: opacity 0.7s ease;
+}
+
+.iris-export-dock {
+    position: relative;
+    z-index: 20;
+}
+
+.iris-export-dock button {
+    background: var(--action-btn-bg);
+    transition: background-color 0.7s ease, color 0.7s ease, border-color 0.7s ease, box-shadow 0.7s ease;
+}
+
+.iris-action-btn {
+    background: var(--action-btn-bg);
+    color: var(--action-btn-fg);
+    transition: background-color 0.7s ease, color 0.7s ease, border-color 0.7s ease, box-shadow 0.7s ease;
+}
+
+/* Force COPY/EXPORT buttons to use the same theme transition path as GO. */
+.iris-export-dock .btn-main {
+    background-color: var(--action-btn-bg) !important;
+    color: var(--action-btn-fg) !important;
+    transition: background-color 0.7s ease, color 0.7s ease, border-color 0.7s ease, box-shadow 0.7s ease !important;
+}
+
+.iris-export-dock .btn-main .iris-action-text {
+    color: inherit !important;
+    transition: color 0.7s ease !important;
+}
+
+.iris-action-text {
+    color: var(--action-btn-fg) !important;
+    transition: color 0.7s ease;
+}
+
+.iris-export-btn {
+    position: absolute;
+    inset: 0;
+    transform: translateY(0) scale(0.98);
+    opacity: 0;
+    pointer-events: none;
+    transition: transform 220ms ease, opacity 220ms ease;
+}
+
+.iris-export-dock.open .iris-export-btn {
+    transform: translateY(-58px) scale(1);
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.iris-export-dock.open > button:first-child {
+    transform: translateY(4px);
+}
+
+.iris-export-dock > button:first-child {
+    transition: transform 220ms ease;
+}
+
+.iris-mobile-sheet {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: color-mix(in srgb, var(--primary-color) 92%, #000 8%);
+    border-radius: 18px 18px 0 0;
+    transform: translateY(calc(100% - 70px)) scaleY(0.96);
+    transform-origin: bottom center;
+    transition: transform 0.45s cubic-bezier(0.22, 0.8, 0.22, 1);
+    z-index: 50;
+    will-change: transform;
+}
+
+.iris-nav-btn {
+    z-index: 5;
+}
+
+.iris-mobile-sheet.open {
+    transform: translateY(0) scaleY(1);
+}
+
+.iris-mobile-sheet.anim-open {
+    animation: irisSheetOpen 0.26s cubic-bezier(0.18, 0.88, 0.24, 1) both;
+}
+
+.iris-mobile-sheet.anim-close {
+    animation: irisSheetClose 0.26s cubic-bezier(0.4, 0.0, 0.2, 1) both;
+}
+
+.iris-sheet-handle {
+    display: inline-block;
+    width: 56px;
+    height: 8px;
+    border-radius: 999px;
+    background: #d3d3d3;
+}
+
+.iris-swatch-empty {
+    background: var(--swatch-empty);
+    border: 1px solid color-mix(in srgb, var(--swatch-empty) 70%, #cfcfcf 30%);
+    transition: background-color var(--palette-shift-duration) ease, border-color var(--palette-shift-duration) ease;
+}
+
+.iris-side-strip {
+    border: 0;
+    background: transparent;
+    z-index: 6;
+    transition: opacity 0.25s ease;
+}
+
+.iris-side-strip:disabled {
+    opacity: 0.35;
+    pointer-events: none;
+}
+
+.iris-side-strip-left {
+    cursor: w-resize;
+}
+
+.iris-side-strip-right {
+    cursor: e-resize;
+}
+
+.iris-theme-host {
+    transition: background-color 0.7s ease, color 0.7s ease;
+}
+
+.iris-bg-gradient-default,
+.iris-mobile-sheet,
+.iris-swatch-empty,
+.palette-swatch,
+.iris-extract-label,
+#upload-area,
+#result,
+.iris-export-btn,
+.iris-theme-track,
+.iris-theme-label,
+.iris-theme-knob {
+    transition: background 0.7s ease, background-color 0.7s ease, color 0.7s ease, border-color 0.7s ease, box-shadow 0.7s ease, opacity 0.7s ease;
+}
+
+.iris-theme-track,
+.iris-theme-knob,
+.iris-action-btn,
+.iris-export-dock button,
+.btn-main,
+.btn-num-control {
+    transition: background-color 0.7s ease, color 0.7s ease, border-color 0.7s ease, box-shadow 0.7s ease, transform 0.35s ease, opacity 0.35s ease;
+}
+
+
+:root[data-theme="light"] {
+    --primary-color: #ececec;
+    --primary-color-two: #8f8f8f;
+    --primary-color-three: #7f7f7f;
+    --primary-color-four: #d3d3d3;
+    --text-color: #262626;
+    --panel-bg: #f4f4f4;
+    --swatch-empty: #ededed;
+    --mid-band: #ffffff;
+    --action-btn-bg: #f3f3f3;
+    --action-btn-fg: #8f8f8f;
+    --swatch-right-bg: #f7f7f7;
+    --swatch-split-right: #ffffff;
+    --extract-color: #5a5a5a;
+}
+
+:root[data-theme="dark"] {
+    --primary-color: #3a3a3a;
+    --primary-color-two: #d4d4d4;
+    --primary-color-three: #ececec;
+    --primary-color-four: #878787;
+    --text-color: #ececec;
+    --panel-bg: #262626;
+    --swatch-empty: #323232;
+    --mid-band: #2d2d2d;
+    --action-btn-bg: #444444;
+    --action-btn-fg: #e2e2e2;
+    --swatch-right-bg: #0f0f0f;
+    --swatch-split-right: #000000;
+    --extract-color: #bdbdbd;
+}
+
+.iris-theme-toggle {
+    border: 0;
+    background: transparent;
+}
+
+.iris-toast {
+    position: fixed;
+    left: 50%;
+    bottom: 18px;
+    transform: translateX(-50%) translateY(8px);
+    z-index: 120;
+    border: 1px solid var(--primary-color-four);
+    background: var(--action-btn-bg);
+    color: var(--action-btn-fg);
+    border-radius: 12px;
+    padding: 10px 14px;
+    font-size: 14px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+    opacity: 0;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.iris-toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}
+
+.iris-theme-track {
+    width: 68px;
+    height: 32px;
+    border-radius: 999px;
+    border: 1px solid var(--primary-color-four);
+    background: color-mix(in srgb, var(--primary-color) 74%, #ffffff 26%);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 10px;
+    position: relative;
+    color: var(--primary-color-two);
+}
+
+.iris-theme-label {
+    font-size: 11px;
+    line-height: 1;
+    z-index: 1;
+}
+
+.iris-theme-knob {
+    position: absolute;
+    top: 3px;
+    left: 4px;
+    width: 24px;
+    height: 24px;
+    border-radius: 999px;
+    background: color-mix(in srgb, #ffffff 86%, var(--primary-color-two) 14%);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.16);
+    transition: transform 0.35s ease;
+}
+
+.iris-theme-knob.on {
+    transform: translateX(35px);
+}
+
+.iris-preview-pop {
+    animation: irisPreviewPop 0.26s ease;
+}
+
+.iris-slide-in-right {
+    animation: irisSlideInRight 0.26s ease;
+}
+
+.iris-slide-in-left {
+    animation: irisSlideInLeft 0.26s ease;
+}
+
+.iris-swatch-enter {
+    animation: irisSwatchEnter 0.42s ease;
+}
+
+.palette-swatch {
+    position: relative;
+    overflow: hidden;
+    background: var(--swatch-left, #808080);
+    transition: background-color var(--palette-shift-duration) ease, color var(--palette-shift-duration) ease, border-color var(--palette-shift-duration) ease, box-shadow var(--palette-shift-duration) ease;
+}
+
+.palette-swatch::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-color: var(--swatch-right-bg);
+    /* 120deg split through center (top ~63%, bottom ~37%). */
+    clip-path: polygon(63% 0, 100% 0, 100% 100%, 37% 100%);
+    transition: background-color var(--palette-shift-duration) ease;
+}
+
+#upload-area {
+    transition: background 0.7s ease, background-color 0.7s ease, border-color 0.7s ease, box-shadow 0.7s ease;
+}
+
+.palette-label {
+    position: relative;
+    z-index: 1;
+    color: #e0e0e0;
+    text-shadow: 0 1px 0 rgba(41, 41, 41, 0.6), 1px 1px 0 rgba(41, 41, 41, 0.45);
+}
+
+.iris-swatch-dim {
+    /* 70% transparent => opacity 0.3 */
+    opacity: 0.3;
+    filter: saturate(0.85);
+    transition: opacity var(--palette-shift-duration) ease, filter var(--palette-shift-duration) ease;
+}
+
+.iris-swatch-fade-in {
+    animation: irisSwatchFadeIn var(--palette-shift-duration) ease;
+}
+
+.iris-swatch-fade-out {
+    animation: irisSwatchFadeOut var(--palette-shift-duration) ease forwards;
+}
+
+.iris-extract-label {
+    color: var(--extract-color);
+}
+
+@keyframes irisPreviewPop {
+    0% {
+        opacity: 0.35;
+        transform: scale(0.92);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes irisSlideInRight {
+    0% {
+        opacity: 0.4;
+        transform: translateX(16px) scale(0.97);
+    }
+    100% {
+        opacity: 1;
+        transform: translateX(0) scale(1);
+    }
+}
+
+@keyframes irisSlideInLeft {
+    0% {
+        opacity: 0.4;
+        transform: translateX(-16px) scale(0.97);
+    }
+    100% {
+        opacity: 1;
+        transform: translateX(0) scale(1);
+    }
+}
+
+@keyframes irisSwatchEnter {
+    0% {
+        opacity: 0.2;
+        transform: translateY(6px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes irisSwatchFadeIn {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+@keyframes irisSwatchFadeOut {
+    0% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+    }
+}
+
+@keyframes irisSheetOpen {
+    0% {
+        transform: translateY(calc(100% - 70px)) scaleY(0.94);
+    }
+    60% {
+        transform: translateY(-3%) scaleY(1.01);
+    }
+    100% {
+        transform: translateY(0) scaleY(1);
+    }
+}
+
+@keyframes irisSheetClose {
+    0% {
+        transform: translateY(0) scaleY(1);
+    }
+    100% {
+        transform: translateY(calc(100% - 70px)) scaleY(0.94);
+    }
 }

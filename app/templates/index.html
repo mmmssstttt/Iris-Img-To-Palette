@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme="dark">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -21,15 +21,22 @@
       }
 
       @utility btn-num-control {
-        @apply h-10 w-10 rounded-md bg-[var(--primary-color-two)] text-2xl text-white;
+        @apply h-10 w-10 rounded-md border border-[var(--primary-color-four)] bg-[var(--action-btn-bg)] text-[var(--action-btn-fg)] text-2xl;
       }
     </style>
   </head>
-  <body class="">
-    <div class="w-full max-w-320 mx-auto xl:my-10 p-4" x-data="uploader()">
+  <body class="overflow-hidden">
+    <div class="iris-theme-host w-full max-w-320 mx-auto p-3 md:p-4 h-screen relative" x-data="uploader()">
+      <button type="button" class="iris-theme-toggle absolute right-4 top-3 z-30" @click="toggleTheme()" :aria-pressed="isDark ? 'true' : 'false'">
+        <span class="iris-theme-track">
+          <span class="iris-theme-label">&#9728;</span>
+          <span class="iris-theme-label">&#9790;</span>
+          <span class="iris-theme-knob" :class="isDark ? 'on' : ''"></span>
+        </span>
+      </button>
       <form
         id="extract-form"
-        class="flex h-full flex-col gap-4"
+        class="flex h-full flex-col gap-3 pt-12 pb-44 lg:pb-0"
         hx-post="/api/extract"
         hx-target="#result"
         hx-swap="innerHTML"
@@ -41,87 +48,83 @@
           x-ref="fileInput"
           id="image-upload"
           class="hidden"
-          name="image"
+          name="images"
           type="file"
+          multiple
           accept="image/*"
-          required
           @change="onPick($event)"
         />
 
         <input type="hidden" name="n_colors" x-model="nColors" />
+        <input type="hidden" name="current_index" :value="currentIndex" />
 
         <div
           id="upload-area"
-          class="relative min-h-120 max-h-120 flex items-center justify-center p-4 text-center cursor-pointer"
-          :class="!previewUrl ? 'bg-[var(--primary-color)] rounded-2xl' : 'iris-bg-gradient-default iris-rounded-img-exist iris-shadow-main'"
-          :class="dropActive ? 'ring-2 ring-white/60' : ''"
-          @click="$refs.fileInput.click()"
+          class="relative flex min-h-[39vh] max-h-[39vh] md:min-h-[43vh] md:max-h-[43vh] items-center justify-center p-3 text-center cursor-pointer overflow-hidden"
+          :class="[!previewUrl ? 'iris-upload-idle iris-rounded-img-exist iris-shadow-main' : 'iris-bg-gradient-default iris-rounded-img-exist iris-shadow-main', dropActive ? 'ring-2 ring-white/60' : '']"
+          @click="onUploadAreaClick($event)"
           @dragover.prevent="dropActive = true"
           @dragleave.prevent="dropActive = false"
           @drop.prevent="onDrop($event)"
         >
+          <div class="iris-upload-mid-band" aria-hidden="true"></div>
           <template x-if="!previewUrl">
-            <div class="h-full w-full flex items-center justify-center">
+            <div class="relative z-10 h-full w-full flex items-center justify-center">
               <p class="tracking-wide text-[var(--primary-color-three)]">Upload / Drag Image Here</p>
             </div>
           </template>
           <template x-if="previewUrl">
-            <img :src="previewUrl" alt="preview" class="max-h-105 rounded-2xl object-contain" />
+            <div
+              class="relative w-full h-full flex items-center justify-center"
+              @pointerdown.stop="startPreviewDrag($event)"
+              @pointermove.stop="movePreviewDrag($event)"
+              @pointerup.stop="endPreviewDrag($event)"
+              @pointercancel.stop="endPreviewDrag($event)"
+            >
+              <img :src="previewUrl" alt="preview" class="relative z-20 max-h-full max-w-[74%] rounded-2xl object-contain select-none" :class="[previewAnimating ? 'iris-preview-pop' : '', previewSlideClass]" draggable="false" />
+              <button
+                type="button"
+                class="iris-nav-btn absolute left-2 top-1/2 -translate-y-1/2 h-15 w-15 rounded-full bg-black/45 text-white text-2xl"
+                :disabled="!(totalFiles > 1 && currentIndex > 0)"
+                :class="(totalFiles > 1 && currentIndex > 0) ? 'opacity-100' : 'opacity-35'"
+                @pointerdown.prevent="startNavHold(-1, $event)"
+                @pointerup="stopNavHold()"
+                @pointerleave="stopNavHold()"
+                @pointercancel="stopNavHold()"
+                @click.stop
+                aria-label="Previous image"
+              >&#x2039;</button>
+              <button
+                type="button"
+                class="iris-nav-btn absolute right-2 top-1/2 -translate-y-1/2 h-15 w-15 rounded-full bg-black/45 text-white text-2xl"
+                :disabled="!(totalFiles > 1 && currentIndex < (totalFiles - 1))"
+                :class="(totalFiles > 1 && currentIndex < (totalFiles - 1)) ? 'opacity-100' : 'opacity-35'"
+                @pointerdown.prevent="startNavHold(1, $event)"
+                @pointerup="stopNavHold()"
+                @pointerleave="stopNavHold()"
+                @pointercancel="stopNavHold()"
+                @click.stop
+                aria-label="Next image"
+              >&#x203A;</button>
+              <span
+                x-show="totalFiles > 1"
+                x-text="`${currentIndex + 1}/${totalFiles}`"
+                class="absolute right-2 top-2 rounded-full bg-[var(--primary-color-two)] px-3 py-1 text-sm text-white"
+              ></span>
+            </div>
           </template>
         </div>
 
-        <div id="result" class="flex-none rounded-2xl">
-          <div class="flex h-full flex-col justify-between gap-4">
-            <div class="flex flex-col lg:flex-row flex-wrap items-center justify-between gap-4">
-              <button
-                type="button"
-                class="btn-main iris-shadow-main"
-                onclick="copyPaletteJson(this)"
-              >
-                <span class="text-lg text-[var(--primary-color-two)]">COPY JSON</span>
-              </button>
+        <div id="result" class="flex-none rounded-2xl">{% include "partials/result.html" %}</div>
 
-              <div class="flex flex-col sm:flex-row items-center gap-4 uppercase tracking-wide text-[var(--primary-color-two)]">
-                <span class="text-2xl">Extract</span>
-                <button
-                  type="button"
-                  class="btn-num-control"
-                  @pointerdown.prevent="startAdjust(-1)"
-                  @pointerup="stopAdjust()"
-                  @pointerleave="stopAdjust()"
-                  @pointercancel="stopAdjust()"
-                  aria-label="Decrease n_colors"
-                >
-                  <span class="text-2xl"> - </span>
-                </button>
-                <span class="text-center text-2xl text-[var(--primary-color-three)]" x-text="nColors"></span>
-                <button
-                  type="button"
-                  class="btn-num-control"
-                  @pointerdown.prevent="startAdjust(1)"
-                  @pointerup="stopAdjust()"
-                  @pointerleave="stopAdjust()"
-                  @pointercancel="stopAdjust()"
-                  aria-label="Increase n_colors"
-                >
-                  <span class="text-2xl"> + </span>
-                </button>
-                <span class="text-2xl">Color</span>
-              </div>
-
-              <button
-                type="submit"
-                class="btn-main iris-shadow-main"
-              >
-                <span class="text-2xl text-[var(--primary-color-two)]">GO</span>
-              </button>
-
-              <div class="w-full grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2">
-                {% for _ in range(12) %}
-                  <div class="h-16 sm:h-22 rounded-xl bg-[var(--primary-color)]"></div>
-                {% endfor %}
-              </div>
-            </div>
+        <div id="mobile-sheet" class="lg:hidden iris-mobile-sheet">
+          <button type="button" class="w-full py-2" onclick="toggleMobileSheet()">
+            <span class="iris-sheet-handle"></span>
+          </button>
+          <div id="mobile-swatches" class="grid grid-cols-3 gap-2 px-3 pb-4">
+            {% for _ in range(9) %}
+              <div class="h-12 rounded-xl bg-[var(--primary-color)]"></div>
+            {% endfor %}
           </div>
         </div>
       </form>
