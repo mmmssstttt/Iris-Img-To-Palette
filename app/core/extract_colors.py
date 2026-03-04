@@ -24,7 +24,7 @@ def extract_dominant_colors(image_path: str, n_colors: int = 3) -> list[dict[str
     image_bytes = np.fromfile(Path(image_path), dtype=np.uint8)
     image_bgr = cv2.imdecode(image_bytes, cv2.IMREAD_COLOR)
     if image_bgr is None:
-        raise FileNotFoundError(f"Cannot read image: {image_path}")
+        raise ValueError(f"Invalid or corrupted image format: {image_path}")
 
     small_bgr = _resize_for_speed(image_bgr)
     image_rgb = cv2.cvtColor(small_bgr, cv2.COLOR_BGR2RGB)
