@@ -2,6 +2,7 @@ import hashlib
 import os
 from pathlib import Path
 
+import aiofiles
 from fastapi import UploadFile
 
 from ..config import settings
@@ -21,7 +22,7 @@ async def write_upload_to_temp(upload: UploadFile, upload_dir: Path, safe_name: 
     total_bytes = 0
     sha256 = hashlib.sha256()
 
-    with temp_path.open("wb") as f:
+    async with aiofiles.open(temp_path, "wb") as f:
         while True:
             chunk = await upload.read(settings.upload_chunk_size)
             if not chunk:
@@ -31,7 +32,7 @@ async def write_upload_to_temp(upload: UploadFile, upload_dir: Path, safe_name: 
                 limit_mb = settings.max_upload_bytes // (1024 * 1024)
                 raise ValueError(f"File '{original_name}' exceeds {limit_mb}MB.")
             sha256.update(chunk)
-            f.write(chunk)
+            await f.write(chunk)
 
     if total_bytes == 0:
         raise ValueError(f"File '{original_name}' is empty.")
@@ -58,4 +59,3 @@ def safe_unlink(path: Path) -> None:
 
 def is_within_upload_dir(path: Path, upload_root: Path) -> bool:
     return upload_root in path.resolve().parents
-
