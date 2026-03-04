@@ -8,11 +8,11 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
 from .config import settings
-from .palette_service import (
+from .services.format_service import format_result_for_template
+from .services.palette_service import (
     clamp_n_colors,
     clear_history_records,
     extract_batch_palettes,
-    format_result_for_template,
     load_history,
     load_result,
 )
