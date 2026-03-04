@@ -12,8 +12,11 @@ MAGIC_BYTES = {b"\xff\xd8\xff", b"\x89PNG\r\n\x1a\n", b"GIF8", b"RIFF", b"BM"}
 
 
 def sanitize_filename(filename: str) -> str:
-    safe_name = "".join(ch if ch.isalnum() or ch in ("-", "_", ".", " ") else "_" for ch in filename).strip()
-    return safe_name or "upload"
+    safe_name = "".join(
+        ch if ch.isalnum() or ch in ("-", "_", ".") else "_"
+        for ch in filename
+    ).strip("_")[:128] or "upload"
+    return safe_name
 
 
 async def write_upload_to_temp(upload: UploadFile, upload_dir: Path, safe_name: str, original_name: str) -> tuple[Path, str]:

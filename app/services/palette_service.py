@@ -66,7 +66,7 @@ async def extract_batch_palettes(
         final_path: Path | None = None
         try:
             temp_path, file_hash = await write_upload_to_temp(upload, upload_dir, safe_name, original_name)
-            validate_image_magic(temp_path, original_name)
+            await run_in_threadpool(validate_image_magic, temp_path, original_name)
             final_path = finalize_upload(temp_path, upload_dir, file_hash, safe_name)
             temp_path = None
 
