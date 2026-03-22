@@ -12,6 +12,7 @@ from fastapi import FastAPI, File, UploadFile, Request, Form
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.concurrency import run_in_threadpool
+from fastapi.staticfiles import StaticFiles
 
 import sys
 import json
@@ -26,6 +27,7 @@ from core.ai.saliency_extraction import extract_top10_saliency
 app = FastAPI(title="Palette Extraction App")
 templates = Jinja2Templates(directory=str(Path(__file__).resolve().parent / "templates"))
 
+app.mount("/static", StaticFiles(directory=str(Path(__file__).resolve().parent / "static")), name="static")
 
 @app.get("/", response_class=HTMLResponse)
 def index(request: Request) -> HTMLResponse:
