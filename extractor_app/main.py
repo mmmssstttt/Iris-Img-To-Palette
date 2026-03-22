@@ -19,6 +19,7 @@ import sys
 sys.path.append(str(Path(__file__).resolve().parent.parent))
 
 from core.ai.gwo_extraction import extract_top10_oklab
+from core.ai.k_means_extractor import extract_top10_kmeans
 from core.ai.saliency_extraction import extract_top10_saliency
 
 
@@ -48,7 +49,7 @@ async def api_extract(
 
     method = (method or "gwo").strip().lower()
 
-    if method not in {"gwo", "saliency"}:
+    if method not in {"gwo", "saliency", "k-means"}:
         return HTMLResponse("<div class='text-red-500'>Invalid extraction method</div>", status_code=400)
 
     fd, temp_path = tempfile.mkstemp(suffix=".png")
@@ -60,6 +61,8 @@ async def api_extract(
 
         if method == "saliency":
             colors = await run_in_threadpool(extract_top10_saliency, temp_path, 10)
+        elif method == "k-means":
+            colors = await run_in_threadpool(extract_top10_kmeans, temp_path, 10)
         else:
             colors = await run_in_threadpool(extract_top10_oklab, temp_path, 10)
 
@@ -90,6 +93,6 @@ async def api_extract(
             "request": request,
             "palette": palette,
             "image_filename": image.filename,
-            "method": "SALIENCY" if method == "saliency" else method.upper(),
+            "method": "SALIENCY" if method == "saliency" else ("K-MEANS" if method == "k-means" else method.upper()),
         },
     )
