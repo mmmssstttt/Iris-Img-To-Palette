@@ -6,7 +6,7 @@ import cv2
 import numpy as np
 from sklearn.cluster import KMeans
 
-from .color_oklch import hex_to_oklch
+from core.colors.color_oklch import hex_to_oklch
 
 
 def _resize_for_speed(image_bgr: np.ndarray) -> np.ndarray:

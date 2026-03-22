@@ -7,10 +7,10 @@ import cv2
 import numpy as np
 from sklearn.cluster import KMeans
 
-# Reuse existing OKLab->HEX conversion helpers for consistent output shaping.
+# Reuse shared color conversion helpers for consistent output shaping.
 sys.path.append(str(Path(__file__).resolve().parent.parent))
-from app.core.color_oklab import oklab_to_hex
-from app.core.color_oklch import _linear_rgb_to_oklab, _srgb_channel_to_linear
+from core.colors.color_oklab import oklab_to_hex
+from core.colors.color_oklch import _linear_rgb_to_oklab, _srgb_channel_to_linear
 
 
 def _rgb_to_oklab_pixels(rgb_pixels: np.ndarray) -> np.ndarray:

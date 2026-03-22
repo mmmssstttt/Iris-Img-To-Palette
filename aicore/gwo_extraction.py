@@ -22,10 +22,10 @@ class KMeansSeededGWO(GreyWolfOptimizer):
             individual.f = task.eval(individual.x)
         return pop, fpop, d
 
-# Add parent directory to sys.path to allow importing app.core
+# Add parent directory to sys.path to allow importing shared modules.
 sys.path.append(str(Path(__file__).resolve().parent.parent))
-from app.core.color_oklch import _linear_rgb_to_oklab, _srgb_channel_to_linear
-from app.core.color_oklab import oklab_to_hex
+from core.colors.color_oklch import _linear_rgb_to_oklab, _srgb_channel_to_linear
+from core.colors.color_oklab import oklab_to_hex
 
 def rgb_to_oklab_pixel(r, g, b):
     lr = _srgb_channel_to_linear(r)

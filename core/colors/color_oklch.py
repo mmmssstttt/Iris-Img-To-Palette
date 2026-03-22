@@ -50,3 +50,4 @@ def hex_to_oklch(hex_str: str) -> tuple[float, float, float]:
     r, g, b = _hex_to_linear_rgb(hex_str)
     L, a, b = _linear_rgb_to_oklab(r, g, b)
     return oklab_to_oklch(L, a, b)
+

@@ -39,3 +39,4 @@ def oklab_to_hex(L: float, a: float, b: float) -> str:
 
     rgb_255 = np.round(srgb * 255.0).astype(int)
     return "#{:02x}{:02x}{:02x}".format(*rgb_255)
+

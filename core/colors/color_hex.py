@@ -24,3 +24,4 @@ def hex_to_rgb(hex_str: str) -> tuple[int, int, int]:
     normalized = normalize_hex(hex_str)
     value = normalized[1:]
     return tuple(int(value[i : i + 2], 16) for i in range(0, 6, 2))
+
