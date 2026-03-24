@@ -16,10 +16,14 @@ def extract_top10_lightness_ratio_oklab(
     if img_bgr is None:
         raise ValueError(f"Unable to read image or file does not exist : {image_path}")
     
-    # If the image is extremely large, scaling it down before sampling is more stable than randomly sampling directly from a large image
+    # If the image is extremely large, downscale while preserving aspect ratio.
     h, w = img_bgr.shape[:2]
     if h * w > 1000000:
-        img_bgr = cv2.resize(img_bgr, (500, 500), interpolation=cv2.INTER_AREA)
+        target_max_side = 500
+        scale = target_max_side / max(h, w)
+        new_w = max(1, int(w * scale))
+        new_h = max(1, int(h * scale))
+        img_bgr = cv2.resize(img_bgr, (new_w, new_h), interpolation=cv2.INTER_AREA)
 
     img_rgb = cv2.cvtColor(img_bgr, cv2.COLOR_BGR2RGB)
     pixels_rgb = img_rgb.reshape(-1, 3).astype(np.float32) / 255.0
@@ -57,6 +61,7 @@ def extract_top10_lightness_ratio_oklab(
         top_colors.append({
             "rank": i + 1,
             "weighted_ratio": round(float(weighted_ratio[idx]), 3),
+            "score": round(float(weighted_ratio[idx]), 3),
             "mean_lightness": round(float(mean_lightness[idx]), 3),
             "oklab": {"L": round(float(L), 3), "a": round(float(a), 3), "b": round(float(b), 3)},
         })

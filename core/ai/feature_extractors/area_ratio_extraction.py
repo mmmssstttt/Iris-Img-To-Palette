@@ -10,6 +10,11 @@ def extract_top10_area_ratio_oklab(
     k: int = 10,
     bins_per_channel: int = 32,
 ) -> dict:
+    if k <= 0:
+        raise ValueError(f"k must be > 0, got {k}")
+    if not (1 <= bins_per_channel <= 256):
+        raise ValueError(f"bins_per_channel must be in [1, 256], got {bins_per_channel}")
+
     img_bgr = cv2.imread(str(image_path))
     if img_bgr is None:
         raise ValueError(f"Unable to read image: {image_path}")
@@ -18,7 +23,9 @@ def extract_top10_area_ratio_oklab(
     h, w = img_bgr.shape[:2]
     if max(h, w) > max_side:
         scale = max_side / max(h, w)
-        img_bgr = cv2.resize(img_bgr, (int(w * scale), int(h * scale)), interpolation=cv2.INTER_AREA)
+        new_w = max(1, int(w * scale))
+        new_h = max(1, int(h * scale))
+        img_bgr = cv2.resize(img_bgr, (new_w, new_h), interpolation=cv2.INTER_AREA)
 
     img_rgb = cv2.cvtColor(img_bgr, cv2.COLOR_BGR2RGB)
     pixels = img_rgb.reshape(-1, 3).astype(np.int32)
@@ -49,6 +56,7 @@ def extract_top10_area_ratio_oklab(
         top_colors.append({
             "rank": i + 1,
             "area_ratio": round(float(ratio), 3),
+            "score": round(float(ratio), 3),
             "oklab": {"L": round(float(lab[0]), 3), "a": round(float(lab[1]), 3), "b": round(float(lab[2]), 3)},
         })
 

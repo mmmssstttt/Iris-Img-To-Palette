@@ -2,15 +2,15 @@
   {
     "image_name": "test-img.png",
     "gwo_colors": [
-      {"rank": 1, "oklab": {"L": 0.881, "a": -0.033, "b": -0.025}},
-      {"rank": 2, "oklab": {"L": 0.721, "a": -0.055, "b": -0.092}},
-      {"rank": 3, "oklab": {"L": 0.617, "a": -0.035, "b": -0.117}},
-      {"rank": 4, "oklab": {"L": 0.597, "a": 0.017, "b": -0.036}},
-      {"rank": 5, "oklab": {"L": 0.51, "a": -0.023, "b": -0.109}},
-      {"rank": 6, "oklab": {"L": 0.414, "a": -0.022, "b": -0.098}},
-      {"rank": 7, "oklab": {"L": 0.313, "a": -0.018, "b": -0.062}},
-      {"rank": 8, "oklab": {"L": 0.294, "a": -0.009, "b": -0.139}},
-      {"rank": 9, "oklab": {"L": 0.222, "a": -0.008, "b": -0.056}},
+      {"rank": 1, "oklab": {"L": 0.874, "a": -0.034, "b": -0.029}},
+      {"rank": 2, "oklab": {"L": 0.719, "a": -0.054, "b": -0.094}},
+      {"rank": 3, "oklab": {"L": 0.615, "a": -0.035, "b": -0.119}},
+      {"rank": 4, "oklab": {"L": 0.602, "a": 0.018, "b": -0.035}},
+      {"rank": 5, "oklab": {"L": 0.51, "a": -0.022, "b": -0.107}},
+      {"rank": 6, "oklab": {"L": 0.415, "a": -0.021, "b": -0.101}},
+      {"rank": 7, "oklab": {"L": 0.317, "a": -0.019, "b": -0.062}},
+      {"rank": 8, "oklab": {"L": 0.293, "a": -0.009, "b": -0.137}},
+      {"rank": 9, "oklab": {"L": 0.223, "a": -0.007, "b": -0.055}},
       {"rank": 10, "oklab": {"L": 0.151, "a": -0.002, "b": -0.023}}
     ],
     "kmeans_colors": [
@@ -38,53 +38,50 @@
       {"rank": 10, "oklab": {"L": 0.942, "a": -0.01, "b": -0.009}}
     ],
     "user_selected_colors": [
-      {"rank": 1, "oklab": {"L": 0.881, "a": -0.033, "b": -0.027}},
-      {"rank": 2, "oklab": {"L": 0.724, "a": -0.056, "b": -0.093}},
-      {"rank": 3, "oklab": {"L": 0.624, "a": -0.037, "b": -0.119}},
-      {"rank": 4, "oklab": {"L": 0.531, "a": -0.022, "b": -0.108}},
-      {"rank": 5, "oklab": {"L": 0.451, "a": -0.017, "b": -0.092}},
-      {"rank": 6, "oklab": {"L": 0.376, "a": -0.014, "b": -0.116}},
-      {"rank": 7, "oklab": {"L": 0.151, "a": -0.002, "b": -0.023}},
-      {"rank": 8, "oklab": {"L": 0.232, "a": -0.007, "b": -0.059}},
-      {"rank": 9, "oklab": {"L": 0.422, "a": -0.021, "b": -0.099}},
-      {"rank": 10, "oklab": {"L": 0.696, "a": -0.087, "b": -0.108}}
+      {"rank": 1, "oklab": {"L": 0.312, "a": -0.012, "b": -0.106}},
+      {"rank": 2, "oklab": {"L": 0.525, "a": -0.025, "b": -0.117}},
+      {"rank": 3, "oklab": {"L": 0.696, "a": -0.087, "b": -0.108}},
+      {"rank": 4, "oklab": {"L": 0.325, "a": -0.018, "b": -0.064}},
+      {"rank": 5, "oklab": {"L": 0.227, "a": -0.007, "b": -0.057}},
+      {"rank": 6, "oklab": {"L": 0.601, "a": 0.017, "b": -0.036}},
+      {"rank": 7, "oklab": {"L": 0.72, "a": -0.038, "b": -0.076}},
+      {"rank": 8, "oklab": {"L": 0.942, "a": -0.01, "b": -0.009}},
+      {"rank": 9, "oklab": {"L": 0.72, "a": -0.038, "b": -0.076}},
+      {"rank": 10, "oklab": {"L": 0.893, "a": -0.02, "b": -0.02}}
     ],
     "visual_dimensions_oklab": {
       "physical_area_ratio": {
         "dimension": "physical_area_ratio",
-        "description": "Single-color pixel area ratio in the image.",
         "top_colors": [
-          {"rank": 1, "area_ratio": 0.049, "score": 0.049, "oklab": {"L": 0.124, "a": 0.001, "b": -0.013}},
-          {"rank": 2, "area_ratio": 0.045, "score": 0.045, "oklab": {"L": 0.146, "a": -0.002, "b": -0.023}},
-          {"rank": 3, "area_ratio": 0.031, "score": 0.031, "oklab": {"L": 0.161, "a": -0.003, "b": -0.031}},
+          {"rank": 1, "area_ratio": 0.049, "score": 0.049, "oklab": {"L": 0.123, "a": 0.002, "b": -0.014}},
+          {"rank": 2, "area_ratio": 0.045, "score": 0.045, "oklab": {"L": 0.144, "a": -0.002, "b": -0.024}},
+          {"rank": 3, "area_ratio": 0.031, "score": 0.031, "oklab": {"L": 0.16, "a": -0.003, "b": -0.031}},
           {"rank": 4, "area_ratio": 0.026, "score": 0.026, "oklab": {"L": 0.165, "a": -0.002, "b": -0.027}},
-          {"rank": 5, "area_ratio": 0.025, "score": 0.025, "oklab": {"L": 0.177, "a": -0.005, "b": -0.025}},
-          {"rank": 6, "area_ratio": 0.02, "score": 0.02, "oklab": {"L": 0.156, "a": -0.0, "b": -0.02}},
-          {"rank": 7, "area_ratio": 0.019, "score": 0.019, "oklab": {"L": 0.255, "a": -0.011, "b": -0.05}},
-          {"rank": 8, "area_ratio": 0.018, "score": 0.018, "oklab": {"L": 0.193, "a": -0.004, "b": -0.035}},
+          {"rank": 5, "area_ratio": 0.025, "score": 0.025, "oklab": {"L": 0.178, "a": -0.005, "b": -0.025}},
+          {"rank": 6, "area_ratio": 0.02, "score": 0.02, "oklab": {"L": 0.155, "a": 0.0, "b": -0.02}},
+          {"rank": 7, "area_ratio": 0.019, "score": 0.019, "oklab": {"L": 0.255, "a": -0.012, "b": -0.051}},
+          {"rank": 8, "area_ratio": 0.018, "score": 0.018, "oklab": {"L": 0.192, "a": -0.004, "b": -0.034}},
           {"rank": 9, "area_ratio": 0.017, "score": 0.017, "oklab": {"L": 0.217, "a": -0.008, "b": -0.039}},
-          {"rank": 10, "area_ratio": 0.012, "score": 0.012, "oklab": {"L": 0.281, "a": -0.016, "b": -0.052}}
+          {"rank": 10, "area_ratio": 0.011, "score": 0.011, "oklab": {"L": 0.28, "a": -0.016, "b": -0.053}}
         ]
       },
       "similar_color_area_sum": {
         "dimension": "similar_color_area_sum",
-        "description": "Aggregate visually similar colors using Oklab distance clustering.",
         "top_colors": [
           {"rank": 1, "area_ratio": 0.232, "score": 0.232, "oklab": {"L": 0.149, "a": -0.001, "b": -0.023}},
-          {"rank": 2, "area_ratio": 0.145, "score": 0.145, "oklab": {"L": 0.224, "a": -0.007, "b": -0.057}},
-          {"rank": 3, "area_ratio": 0.129, "score": 0.129, "oklab": {"L": 0.42, "a": -0.021, "b": -0.1}},
-          {"rank": 4, "area_ratio": 0.108, "score": 0.108, "oklab": {"L": 0.516, "a": -0.024, "b": -0.111}},
-          {"rank": 5, "area_ratio": 0.085, "score": 0.085, "oklab": {"L": 0.626, "a": -0.037, "b": -0.117}},
-          {"rank": 6, "area_ratio": 0.08, "score": 0.08, "oklab": {"L": 0.32, "a": -0.018, "b": -0.064}},
-          {"rank": 7, "area_ratio": 0.073, "score": 0.073, "oklab": {"L": 0.726, "a": -0.056, "b": -0.091}},
-          {"rank": 8, "area_ratio": 0.071, "score": 0.071, "oklab": {"L": 0.299, "a": -0.009, "b": -0.139}},
-          {"rank": 9, "area_ratio": 0.056, "score": 0.056, "oklab": {"L": 0.598, "a": 0.017, "b": -0.037}},
-          {"rank": 10, "area_ratio": 0.021, "score": 0.021, "oklab": {"L": 0.886, "a": -0.031, "b": -0.026}}
+          {"rank": 2, "area_ratio": 0.148, "score": 0.148, "oklab": {"L": 0.224, "a": -0.007, "b": -0.06}},
+          {"rank": 3, "area_ratio": 0.135, "score": 0.135, "oklab": {"L": 0.428, "a": -0.022, "b": -0.101}},
+          {"rank": 4, "area_ratio": 0.11, "score": 0.11, "oklab": {"L": 0.689, "a": -0.051, "b": -0.105}},
+          {"rank": 5, "area_ratio": 0.108, "score": 0.108, "oklab": {"L": 0.545, "a": -0.03, "b": -0.122}},
+          {"rank": 6, "area_ratio": 0.084, "score": 0.084, "oklab": {"L": 0.322, "a": -0.018, "b": -0.064}},
+          {"rank": 7, "area_ratio": 0.072, "score": 0.072, "oklab": {"L": 0.309, "a": -0.009, "b": -0.141}},
+          {"rank": 8, "area_ratio": 0.042, "score": 0.042, "oklab": {"L": 0.629, "a": 0.016, "b": -0.038}},
+          {"rank": 9, "area_ratio": 0.041, "score": 0.041, "oklab": {"L": 0.53, "a": 0.007, "b": -0.051}},
+          {"rank": 10, "area_ratio": 0.028, "score": 0.028, "oklab": {"L": 0.86, "a": -0.035, "b": -0.035}}
         ]
       },
       "chroma_saliency": {
         "dimension": "chroma_saliency",
-        "description": "Use Oklab chroma (C) as saliency gain for vivid color weighting.",
         "top_colors": [
           {"rank": 1, "weighted_ratio": 0.154, "score": 0.154, "mean_chroma": 0.104, "oklab": {"L": 0.421, "a": -0.021, "b": -0.106}},
           {"rank": 2, "weighted_ratio": 0.146, "score": 0.146, "mean_chroma": 0.024, "oklab": {"L": 0.151, "a": -0.001, "b": -0.024}},
@@ -100,57 +97,56 @@
       },
       "lightness_ratio": {
         "dimension": "lightness_ratio",
-        "description": "Use Oklab L with extreme-lightness weighting for tonal dominance.",
         "top_colors": [
           {"rank": 1, "weighted_ratio": 0.303, "score": 0.303, "mean_lightness": 0.149, "oklab": {"L": 0.148, "a": -0.001, "b": -0.023}},
-          {"rank": 2, "weighted_ratio": 0.161, "score": 0.161, "mean_lightness": 0.221, "oklab": {"L": 0.22, "a": -0.007, "b": -0.056}},
-          {"rank": 3, "weighted_ratio": 0.101, "score": 0.101, "mean_lightness": 0.416, "oklab": {"L": 0.413, "a": -0.021, "b": -0.101}},
-          {"rank": 4, "weighted_ratio": 0.079, "score": 0.079, "mean_lightness": 0.312, "oklab": {"L": 0.31, "a": -0.018, "b": -0.062}},
-          {"rank": 5, "weighted_ratio": 0.076, "score": 0.076, "mean_lightness": 0.637, "oklab": {"L": 0.64, "a": -0.039, "b": -0.115}},
-          {"rank": 6, "weighted_ratio": 0.074, "score": 0.074, "mean_lightness": 0.52, "oklab": {"L": 0.522, "a": -0.023, "b": -0.109}},
-          {"rank": 7, "weighted_ratio": 0.071, "score": 0.071, "mean_lightness": 0.294, "oklab": {"L": 0.291, "a": -0.009, "b": -0.137}},
-          {"rank": 8, "weighted_ratio": 0.067, "score": 0.067, "mean_lightness": 0.735, "oklab": {"L": 0.737, "a": -0.058, "b": -0.087}},
-          {"rank": 9, "weighted_ratio": 0.041, "score": 0.041, "mean_lightness": 0.605, "oklab": {"L": 0.61, "a": 0.019, "b": -0.034}},
-          {"rank": 10, "weighted_ratio": 0.028, "score": 0.028, "mean_lightness": 0.891, "oklab": {"L": 0.895, "a": -0.028, "b": -0.022}}
+          {"rank": 2, "weighted_ratio": 0.162, "score": 0.162, "mean_lightness": 0.221, "oklab": {"L": 0.22, "a": -0.007, "b": -0.057}},
+          {"rank": 3, "weighted_ratio": 0.1, "score": 0.1, "mean_lightness": 0.418, "oklab": {"L": 0.415, "a": -0.021, "b": -0.101}},
+          {"rank": 4, "weighted_ratio": 0.079, "score": 0.079, "mean_lightness": 0.314, "oklab": {"L": 0.312, "a": -0.018, "b": -0.062}},
+          {"rank": 5, "weighted_ratio": 0.075, "score": 0.075, "mean_lightness": 0.64, "oklab": {"L": 0.643, "a": -0.039, "b": -0.114}},
+          {"rank": 6, "weighted_ratio": 0.074, "score": 0.074, "mean_lightness": 0.522, "oklab": {"L": 0.525, "a": -0.024, "b": -0.11}},
+          {"rank": 7, "weighted_ratio": 0.071, "score": 0.071, "mean_lightness": 0.295, "oklab": {"L": 0.292, "a": -0.009, "b": -0.138}},
+          {"rank": 8, "weighted_ratio": 0.066, "score": 0.066, "mean_lightness": 0.737, "oklab": {"L": 0.739, "a": -0.059, "b": -0.086}},
+          {"rank": 9, "weighted_ratio": 0.041, "score": 0.041, "mean_lightness": 0.604, "oklab": {"L": 0.609, "a": 0.018, "b": -0.035}},
+          {"rank": 10, "weighted_ratio": 0.028, "score": 0.028, "mean_lightness": 0.892, "oklab": {"L": 0.896, "a": -0.028, "b": -0.022}}
         ]
       }
     },
     "visual_rankings": {
       "dominant_main_color_ranking": [
-        {"rank": 1, "area_ratio": 0.049, "oklab": {"L": 0.124, "a": 0.001, "b": -0.013}},
-        {"rank": 2, "area_ratio": 0.045, "oklab": {"L": 0.146, "a": -0.002, "b": -0.023}},
-        {"rank": 3, "area_ratio": 0.031, "oklab": {"L": 0.161, "a": -0.003, "b": -0.031}},
+        {"rank": 1, "area_ratio": 0.049, "oklab": {"L": 0.123, "a": 0.002, "b": -0.014}},
+        {"rank": 2, "area_ratio": 0.045, "oklab": {"L": 0.144, "a": -0.002, "b": -0.024}},
+        {"rank": 3, "area_ratio": 0.031, "oklab": {"L": 0.16, "a": -0.003, "b": -0.031}},
         {"rank": 4, "area_ratio": 0.026, "oklab": {"L": 0.165, "a": -0.002, "b": -0.027}},
-        {"rank": 5, "area_ratio": 0.025, "oklab": {"L": 0.177, "a": -0.005, "b": -0.025}},
-        {"rank": 6, "area_ratio": 0.02, "oklab": {"L": 0.156, "a": -0.0, "b": -0.02}},
-        {"rank": 7, "area_ratio": 0.019, "oklab": {"L": 0.255, "a": -0.011, "b": -0.05}},
-        {"rank": 8, "area_ratio": 0.018, "oklab": {"L": 0.193, "a": -0.004, "b": -0.035}},
+        {"rank": 5, "area_ratio": 0.025, "oklab": {"L": 0.178, "a": -0.005, "b": -0.025}},
+        {"rank": 6, "area_ratio": 0.02, "oklab": {"L": 0.155, "a": 0.0, "b": -0.02}},
+        {"rank": 7, "area_ratio": 0.019, "oklab": {"L": 0.255, "a": -0.012, "b": -0.051}},
+        {"rank": 8, "area_ratio": 0.018, "oklab": {"L": 0.192, "a": -0.004, "b": -0.034}},
         {"rank": 9, "area_ratio": 0.017, "oklab": {"L": 0.217, "a": -0.008, "b": -0.039}},
-        {"rank": 10, "area_ratio": 0.012, "oklab": {"L": 0.281, "a": -0.016, "b": -0.052}}
+        {"rank": 10, "area_ratio": 0.011, "oklab": {"L": 0.28, "a": -0.016, "b": -0.053}}
       ],
       "vividness_ranking": [
-        {"rank": 1, "chroma": 0.054, "oklab": {"L": 0.281, "a": -0.016, "b": -0.052}},
-        {"rank": 2, "chroma": 0.051, "oklab": {"L": 0.255, "a": -0.011, "b": -0.05}},
+        {"rank": 1, "chroma": 0.055, "oklab": {"L": 0.28, "a": -0.016, "b": -0.053}},
+        {"rank": 2, "chroma": 0.052, "oklab": {"L": 0.255, "a": -0.012, "b": -0.051}},
         {"rank": 3, "chroma": 0.04, "oklab": {"L": 0.217, "a": -0.008, "b": -0.039}},
-        {"rank": 4, "chroma": 0.035, "oklab": {"L": 0.193, "a": -0.004, "b": -0.035}},
-        {"rank": 5, "chroma": 0.031, "oklab": {"L": 0.161, "a": -0.003, "b": -0.031}},
+        {"rank": 4, "chroma": 0.034, "oklab": {"L": 0.192, "a": -0.004, "b": -0.034}},
+        {"rank": 5, "chroma": 0.031, "oklab": {"L": 0.16, "a": -0.003, "b": -0.031}},
         {"rank": 6, "chroma": 0.027, "oklab": {"L": 0.165, "a": -0.002, "b": -0.027}},
-        {"rank": 7, "chroma": 0.025, "oklab": {"L": 0.177, "a": -0.005, "b": -0.025}},
-        {"rank": 8, "chroma": 0.023, "oklab": {"L": 0.146, "a": -0.002, "b": -0.023}},
-        {"rank": 9, "chroma": 0.02, "oklab": {"L": 0.156, "a": -0.0, "b": -0.02}},
-        {"rank": 10, "chroma": 0.013, "oklab": {"L": 0.124, "a": 0.001, "b": -0.013}}
+        {"rank": 7, "chroma": 0.025, "oklab": {"L": 0.178, "a": -0.005, "b": -0.025}},
+        {"rank": 8, "chroma": 0.024, "oklab": {"L": 0.144, "a": -0.002, "b": -0.024}},
+        {"rank": 9, "chroma": 0.02, "oklab": {"L": 0.155, "a": 0.0, "b": -0.02}},
+        {"rank": 10, "chroma": 0.014, "oklab": {"L": 0.123, "a": 0.002, "b": -0.014}}
       ],
       "brightness_ranking": [
-        {"rank": 1, "lightness": 0.281, "oklab": {"L": 0.281, "a": -0.016, "b": -0.052}},
-        {"rank": 2, "lightness": 0.255, "oklab": {"L": 0.255, "a": -0.011, "b": -0.05}},
+        {"rank": 1, "lightness": 0.28, "oklab": {"L": 0.28, "a": -0.016, "b": -0.053}},
+        {"rank": 2, "lightness": 0.255, "oklab": {"L": 0.255, "a": -0.012, "b": -0.051}},
         {"rank": 3, "lightness": 0.217, "oklab": {"L": 0.217, "a": -0.008, "b": -0.039}},
-        {"rank": 4, "lightness": 0.193, "oklab": {"L": 0.193, "a": -0.004, "b": -0.035}},
-        {"rank": 5, "lightness": 0.177, "oklab": {"L": 0.177, "a": -0.005, "b": -0.025}},
+        {"rank": 4, "lightness": 0.192, "oklab": {"L": 0.192, "a": -0.004, "b": -0.034}},
+        {"rank": 5, "lightness": 0.178, "oklab": {"L": 0.178, "a": -0.005, "b": -0.025}},
         {"rank": 6, "lightness": 0.165, "oklab": {"L": 0.165, "a": -0.002, "b": -0.027}},
-        {"rank": 7, "lightness": 0.161, "oklab": {"L": 0.161, "a": -0.003, "b": -0.031}},
-        {"rank": 8, "lightness": 0.156, "oklab": {"L": 0.156, "a": -0.0, "b": -0.02}},
-        {"rank": 9, "lightness": 0.146, "oklab": {"L": 0.146, "a": -0.002, "b": -0.023}},
-        {"rank": 10, "lightness": 0.124, "oklab": {"L": 0.124, "a": 0.001, "b": -0.013}}
+        {"rank": 7, "lightness": 0.16, "oklab": {"L": 0.16, "a": -0.003, "b": -0.031}},
+        {"rank": 8, "lightness": 0.155, "oklab": {"L": 0.155, "a": 0.0, "b": -0.02}},
+        {"rank": 9, "lightness": 0.144, "oklab": {"L": 0.144, "a": -0.002, "b": -0.024}},
+        {"rank": 10, "lightness": 0.123, "oklab": {"L": 0.123, "a": 0.002, "b": -0.014}}
       ]
     }
   }

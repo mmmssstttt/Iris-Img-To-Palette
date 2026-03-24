@@ -53,6 +53,7 @@ def extract_top10_similar_area_oklab(
         top_colors.append({
             "rank": i + 1,
             "area_ratio": round(ratio, 3),
+            "score": round(ratio, 3),
             "oklab": {"L": round(float(L), 3), "a": round(float(a), 3), "b": round(float(b), 3)},
         })
 
