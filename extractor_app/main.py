@@ -21,14 +21,15 @@ import asyncio
 # Add project root to sys path so we can import core modules.
 sys.path.append(str(Path(__file__).resolve().parent.parent))
 
-from core.ai.gwo_extraction import extract_top10_gwo
-from core.ai.saliency_extraction import extract_top10_saliency
-from core.ai.k_means_extractor import extract_top10_kmeans
-
-from core.ai.area_ratio_extraction import extract_top10_area_ratio_oklab
-from core.ai.chroma_saliency_extraction import extract_top10_chroma_saliency_oklab
-from core.ai.lightness_ratio_extraction import extract_top10_lightness_ratio_oklab
-from core.ai.similar_area_extraction import extract_top10_similar_area_oklab
+from core.ai import (
+    extract_top10_area_ratio_oklab,
+    extract_top10_chroma_saliency_oklab,
+    extract_top10_gwo,
+    extract_top10_kmeans,
+    extract_top10_lightness_ratio_oklab,
+    extract_top10_saliency,
+    extract_top10_similar_area_oklab,
+)
 from core.colors.color_oklch import _linear_rgb_to_oklab, _srgb_channel_to_linear
 from core.colors.color_hex import hex_to_rgb
 
