@@ -17,6 +17,7 @@ from fastapi.staticfiles import StaticFiles
 import sys
 import json
 import asyncio
+import numpy as np
 
 # Add project root to sys path so we can import core modules.
 sys.path.append(str(Path(__file__).resolve().parent.parent))
@@ -138,7 +139,21 @@ def _to_oklab_user_selected(colors_list) -> list[dict]:
 
 
 def _write_pretty_json_with_inline_oklab(path: Path, data) -> None:
+    def _to_json_safe(obj):
+        if isinstance(obj, np.generic):
+            return obj.item()
+        if isinstance(obj, np.ndarray):
+            return [_to_json_safe(x) for x in obj.tolist()]
+        if isinstance(obj, dict):
+            return {k: _to_json_safe(v) for k, v in obj.items()}
+        if isinstance(obj, list):
+            return [_to_json_safe(x) for x in obj]
+        if isinstance(obj, tuple):
+            return [_to_json_safe(x) for x in obj]
+        return obj
+
     def _format_json(obj, level: int = 0, indent: int = 2) -> str:
+        obj = _to_json_safe(obj)
         if isinstance(obj, dict):
             # Keep compact one-line JSON for rank payloads and oklab triplets.
             if "rank" in obj or (set(obj.keys()) == {"L", "a", "b"}):

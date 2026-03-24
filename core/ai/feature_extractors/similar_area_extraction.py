@@ -1,73 +1,62 @@
 from __future__ import annotations
-
 from pathlib import Path
-
 import cv2
 import numpy as np
-from sklearn.cluster import KMeans
+from sklearn.cluster import MiniBatchKMeans
 
-from core.colors.color_oklch import _linear_rgb_to_oklab, _srgb_channel_to_linear
-
-
-def _rgb255_to_oklab(rgb_pixels: np.ndarray) -> np.ndarray:
-    rgb_unit = np.clip(rgb_pixels.astype(np.float64) / 255.0, 0.0, 1.0)
-    out = np.empty_like(rgb_unit, dtype=np.float64)
-    for i, (r, g, b) in enumerate(rgb_unit):
-        lr = _srgb_channel_to_linear(float(r))
-        lg = _srgb_channel_to_linear(float(g))
-        lb = _srgb_channel_to_linear(float(b))
-        out[i] = _linear_rgb_to_oklab(lr, lg, lb)
-    return out
-
-
-def _center_to_record(rank: int, center: np.ndarray, ratio: float) -> dict:
-    L, a, b = float(center[0]), float(center[1]), float(center[2])
-    return {
-        "rank": int(rank),
-        "area_ratio": round(float(ratio), 3),
-        "score": round(float(ratio), 3),
-        "oklab": {"L": round(L, 3), "a": round(a, 3), "b": round(b, 3)},
-    }
-
+from core.colors.color_oklch import _rgb_to_oklab_vectorized
 
 def extract_top10_similar_area_oklab(
     image_path: str | Path,
     k: int = 10,
-    sample_ratio: float = 0.35,
     max_samples: int = 40000,
     random_state: int = 42,
 ) -> dict:
+    # 1. Securely read images
     img_bgr = cv2.imread(str(image_path))
     if img_bgr is None:
-        raise ValueError(f"Unable to read image: {image_path}")
+        raise ValueError(f"Could not open or find the image: {image_path}")
 
+    # 2. Scaling or sampling before transformation avoids performing calculations on the entire image
     img_rgb = cv2.cvtColor(img_bgr, cv2.COLOR_BGR2RGB)
-    pixels_rgb = img_rgb.reshape(-1, 3)
-    n = len(pixels_rgb)
-
-    sample_n = max(k, min(int(n * sample_ratio), max_samples))
+    pixels = img_rgb.reshape(-1, 3)
+    
+    # Limit the number of samples to optimize performance
+    n_pixels = pixels.shape[0]
+    sample_n = min(n_pixels, max_samples)
+    effective_k = min(k, sample_n)
     rng = np.random.default_rng(random_state)
-    sample_idx = rng.choice(n, sample_n, replace=False)
-    sampled_rgb = pixels_rgb[sample_idx]
+    sampled_rgb = rng.choice(pixels, sample_n, axis=0, replace=False)
 
-    sampled_oklab = _rgb255_to_oklab(sampled_rgb)
+    # 3. Vectorized color conversion
+    sampled_oklab = _rgb_to_oklab_vectorized(sampled_rgb.astype(np.float64) / 255.0)
 
-    # Clustering in Oklab approximates perceptual grouping via color distance.
-    kmeans = KMeans(n_clusters=k, n_init=10, random_state=random_state)
-    labels = kmeans.fit_predict(sampled_oklab)
-    centers = kmeans.cluster_centers_
-
-    counts = np.bincount(labels, minlength=k).astype(np.float64)
+    # 4. Improve clustering speed using MiniBatchKMeans
+    kmeans = MiniBatchKMeans(
+        n_clusters=effective_k, 
+        batch_size=1024, 
+        n_init="auto", 
+        random_state=random_state
+    ).fit(sampled_oklab)
+    
+    # 5. Results Calculation and Sorting
+    unique_labels, counts = np.unique(kmeans.labels_, return_counts=True)
     ratios = counts / counts.sum()
-    sort_idx = np.argsort(-ratios)
-
-    top_colors = [
-        _center_to_record(rank=i + 1, center=centers[idx], ratio=float(ratios[idx]))
-        for i, idx in enumerate(sort_idx[:k])
-    ]
+    
+    # Arranged in descending order of proportion
+    sorted_indices = np.argsort(-ratios)
+    top_colors = []
+    for i, idx in enumerate(sorted_indices[:effective_k]):
+        center_idx = int(unique_labels[idx])
+        L, a, b = kmeans.cluster_centers_[center_idx]
+        ratio = float(ratios[idx])
+        top_colors.append({
+            "rank": i + 1,
+            "area_ratio": round(ratio, 3),
+            "oklab": {"L": round(float(L), 3), "a": round(float(a), 3), "b": round(float(b), 3)},
+        })
 
     return {
         "dimension": "similar_color_area_sum",
-        "description": "Aggregate visually similar colors using Oklab distance clustering.",
         "top_colors": top_colors,
     }

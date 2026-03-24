@@ -1,5 +1,7 @@
 import math
 
+import numpy as np
+
 
 def _srgb_channel_to_linear(c: float) -> float:
     if c <= 0.04045:
@@ -51,3 +53,25 @@ def hex_to_oklch(hex_str: str) -> tuple[float, float, float]:
     L, a, b = _linear_rgb_to_oklab(r, g, b)
     return oklab_to_oklch(L, a, b)
 
+
+def _rgb_to_oklab_vectorized(rgb: np.ndarray) -> np.ndarray:
+    # 1. sRGB to Linear
+    mask = rgb <= 0.04045
+    linear = np.where(mask, rgb / 12.92, ((rgb + 0.055) / 1.055) ** 2.4)
+    
+    # 2. Linear to LMS
+    r, g, b = linear[:, 0], linear[:, 1], linear[:, 2]
+    l = 0.4122214708 * r + 0.5363325363 * g + 0.0514459929 * b
+    m = 0.2119034982 * r + 0.6806995451 * g + 0.1073969566 * b
+    s = 0.0883024619 * r + 0.2817188376 * g + 0.6299787005 * b
+
+    # 3. LMS to Lab
+    l_ = np.sign(l) * np.abs(l) ** (1/3)
+    m_ = np.sign(m) * np.abs(m) ** (1/3)
+    s_ = np.sign(s) * np.abs(s) ** (1/3)
+
+    L = 0.2104542553 * l_ + 0.7936177850 * m_ - 0.0040720468 * s_
+    a = 1.9779984951 * l_ - 2.4285922050 * m_ + 0.4505937099 * s_
+    b = 0.0259040371 * l_ + 0.7827717662 * m_ - 0.8086757660 * s_
+    
+    return np.stack([L, a, b], axis=1)
