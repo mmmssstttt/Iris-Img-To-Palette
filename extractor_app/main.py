@@ -133,10 +133,10 @@ async def api_record(
 
         record = {
             "image_name": image.filename,
-            "user_selected_colors": colors_list,
             "gwo_colors": format_colors(gwo_colors),
             "kmeans_colors": format_colors(kmeans_colors),
-            "saliency_colors": format_colors(saliency_colors)
+            "saliency_colors": format_colors(saliency_colors),
+            "user_selected_colors": colors_list
         }
 
         data_file = Path(__file__).resolve().parent.parent / "training_data.json"
@@ -153,7 +153,7 @@ async def api_record(
         all_data.append(record)
 
         with open(data_file, "w", encoding="utf-8") as f:
-            json.dump(all_data, f, indent=4, ensure_ascii=False)
+            json.dump(all_data, f, ensure_ascii=False, separators=(",", ":"))
 
         return JSONResponse({"status": "success", "message": "Record saved"})
 
