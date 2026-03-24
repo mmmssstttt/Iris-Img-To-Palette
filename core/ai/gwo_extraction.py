@@ -84,7 +84,7 @@ class OklabColorQuant(Problem):
         lam = 0.05 # Weight of the diversity penalty ( λ )
         return mse + lam * diversity_penalty
 
-def extract_top10_oklab(image_path, k=10, sample_ratio=0.3, pop_size=60, max_evals=20000):
+def extract_top10_gwo(image_path, k=10, sample_ratio=0.3, pop_size=60, max_evals=20000):
     img = cv2.imread(image_path)
     img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB) / 255.0
 
@@ -142,7 +142,7 @@ def extract_top10_oklab(image_path, k=10, sample_ratio=0.3, pop_size=60, max_eva
 
 # test
 if __name__ == "__main__":
-    colors = extract_top10_oklab("data/uploads/254bd6e6c931c97c_test.png")
+    colors = extract_top10_gwo("data/uploads/254bd6e6c931c97c_test.png")
     print("Top 10 dominant colors ( RGB ) :")
     for i, c in enumerate(colors, 1):
         print(f"{i}: {c}  #{c[0]:02x}{c[1]:02x}{c[2]:02x}")
