@@ -23,7 +23,7 @@ from .storage import init_db
 
 
 templates = Jinja2Templates(directory=str(Path(__file__).resolve().parent / "templates"))
-MAX_BATCH_UPLOADS = 20
+MAX_BATCH_UPLOADS = 1000
 limiter = Limiter(key_func=get_remote_address)
 
 
@@ -98,7 +98,7 @@ async def api_result(request: Request, result_id: int) -> HTMLResponse:
 
 
 @app.post("/api/extract", response_class=HTMLResponse)
-@limiter.limit("5/minute")
+@limiter.limit("5/10seconds")
 async def api_extract(
     request: Request,
     images: list[UploadFile] = File(...),

@@ -13,39 +13,114 @@ document.addEventListener("DOMContentLoaded", () => {
     initExportDockHover(document);
 });
 
+function applyExtractResponse(target) {
+    if (!target) return;
+
+    const alpineData = getUploaderData();
+    const palettes = readPaletteDataFromDom(target);
+    if (alpineData && Array.isArray(palettes) && palettes.length > 0) {
+        const n = Math.max(1, parseInt(alpineData.nColors, 10) || 10);
+        const previousPalette = alpineData.extractedPalettes?.[alpineData.currentIndex] || [];
+        const desktop = document.getElementById("desktop-swatches");
+        const mobile = document.getElementById("mobile-swatches");
+        const keepDesktop = alpineData.preSubmitDesktopCount || 0;
+        const keepMobile = alpineData.preSubmitMobileCount || 0;
+
+        if (desktop) {
+            updateSwatchGridLayout(desktop, n);
+            renderPaletteGrid(desktop, previousPalette, n, { keepAtLeast: keepDesktop });
+        }
+        if (mobile) {
+            renderPaletteGrid(mobile, previousPalette, n, { keepAtLeast: keepMobile });
+        }
+
+        alpineData.extractedPalettes = palettes;
+        requestAnimationFrame(() => {
+            alpineData.renderCurrentPalette(true, { keepDesktop, keepMobile });
+            alpineData.preSubmitDesktopCount = 0;
+            alpineData.preSubmitMobileCount = 0;
+        });
+    }
+    applySwatchTextContrast(target);
+    initMobileSheetGesture();
+    initExportDockHover(target);
+    keepDockOpenIfPointerInside(target);
+}
+
+async function submitExtractBatch(form) {
+    const alpineData = getUploaderData();
+    if (!alpineData || !(form instanceof HTMLFormElement)) return;
+
+    const inputEl = alpineData.$refs?.fileInput;
+    const inputCount = inputEl?.files?.length || 0;
+    const memoryCount = alpineData.files?.length || 0;
+
+    if (inputEl && inputCount === 0 && memoryCount > 0) {
+        const dt = new DataTransfer();
+        alpineData.files.forEach((file) => dt.items.add(file));
+        inputEl.files = dt.files;
+    }
+
+    const selectedFiles = Array.from(inputEl?.files || []);
+    if (selectedFiles.length === 0) {
+        alpineData.$refs?.fileInput?.click?.();
+        return;
+    }
+
+    if (selectedFiles.length > MAX_FILES_PER_BATCH) {
+        showTransientNotice(`Limit is ${MAX_FILES_PER_BATCH} images per run.`);
+        alpineData.setFiles(selectedFiles.slice(0, MAX_FILES_PER_BATCH));
+        return;
+    }
+
+    alpineData.preSubmitDesktopCount = document.getElementById("desktop-swatches")?.children?.length || 0;
+    alpineData.preSubmitMobileCount = document.getElementById("mobile-swatches")?.children?.length || 0;
+    alpineData.isWorking = true;
+
+    const formData = new FormData();
+    selectedFiles.forEach((file) => formData.append("images", file));
+    formData.append("n_colors", String(alpineData.nColors || "10"));
+    formData.append("current_index", String(alpineData.currentIndex || 0));
+
+    const result = document.getElementById("result");
+
+    try {
+        const response = await fetch("/api/extract", {
+            method: "POST",
+            body: formData,
+        });
+        const html = await response.text();
+
+        if (response.status === 429) {
+            showTransientNotice("Rate limit exceeded. Please try again in 10 seconds.", 10000);
+            return;
+        }
+
+        if (result) {
+            result.innerHTML = html;
+            applyExtractResponse(result);
+        }
+    } catch {
+        showTransientNotice("Upload failed. Please try again.");
+    } finally {
+        alpineData.isWorking = false;
+    }
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    const form = document.getElementById("extract-form");
+    if (!(form instanceof HTMLFormElement)) return;
+
+    form.addEventListener("submit", (event) => {
+        event.preventDefault();
+        void submitExtractBatch(form);
+    });
+});
+
 // After HTMX is successful, change the result content below
 document.body.addEventListener("htmx:afterSwap", (event) => {
     if (event?.target?.id === "result") {
-        const alpineData = getUploaderData();
-        const palettes = readPaletteDataFromDom(event.target);
-        if (alpineData && Array.isArray(palettes) && palettes.length > 0) {
-            const n = Math.max(1, parseInt(alpineData.nColors, 10) || 10);
-            const previousPalette = alpineData.extractedPalettes?.[alpineData.currentIndex] || [];
-            const desktop = document.getElementById("desktop-swatches");
-            const mobile = document.getElementById("mobile-swatches");
-            const keepDesktop = alpineData.preSubmitDesktopCount || 0;
-            const keepMobile = alpineData.preSubmitMobileCount || 0;
-
-            if (desktop) {
-                updateSwatchGridLayout(desktop, n);
-                renderPaletteGrid(desktop, previousPalette, n, { keepAtLeast: keepDesktop });
-            }
-            if (mobile) {
-                renderPaletteGrid(mobile, previousPalette, n, { keepAtLeast: keepMobile });
-            }
-
-            alpineData.extractedPalettes = palettes;
-            requestAnimationFrame(() => {
-                alpineData.renderCurrentPalette(true, { keepDesktop, keepMobile });
-                // Reset the animation length preserved before submission
-                alpineData.preSubmitDesktopCount = 0;
-                alpineData.preSubmitMobileCount = 0;
-            });
-        }
-        applySwatchTextContrast(event.target);
-        initMobileSheetGesture();
-        initExportDockHover(event.target);
-        keepDockOpenIfPointerInside(event.target);
+        applyExtractResponse(event.target);
     }
 });
 
