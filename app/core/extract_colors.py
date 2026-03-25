@@ -11,6 +11,9 @@ from core.colors.color_oklch import hex_to_oklch
 
 def _resize_for_speed(image_bgr: np.ndarray) -> np.ndarray:
     height, width = image_bgr.shape[:2]
+    if width == 0:
+        return image_bgr
+
     target_width = max(1, min(100, int(width * 0.1)))
 
     if target_width >= width:

@@ -20,6 +20,7 @@ from .storage import init_db
 
 
 templates = Jinja2Templates(directory=str(Path(__file__).resolve().parent / "templates"))
+MAX_BATCH_UPLOADS = 20
 
 
 @asynccontextmanager
@@ -97,6 +98,12 @@ async def api_extract(
     n_colors: int = Form(10),
     current_index: int = Form(0),
 ) -> HTMLResponse:
+    if len(images) > MAX_BATCH_UPLOADS:
+        return HTMLResponse(
+            f"<div class='panel'>{escape(f'Too many images uploaded. Maximum is {MAX_BATCH_UPLOADS}.')}</div>",
+            status_code=400,
+        )
+
     try:
         result = await extract_batch_palettes(
             images,
