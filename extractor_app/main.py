@@ -1,13 +1,13 @@
 from pathlib import Path
 import tempfile
 import os
-import shutil
 import traceback
 import logging
 
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
+import aiofiles
 from fastapi import FastAPI, File, UploadFile, Request, Form
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import HTMLResponse, JSONResponse
@@ -39,6 +39,17 @@ app = FastAPI(title="Palette Extraction App")
 templates = Jinja2Templates(directory=str(Path(__file__).resolve().parent / "templates"))
 
 app.mount("/static", StaticFiles(directory=str(Path(__file__).resolve().parent / "static")), name="static")
+
+MAX_UPLOAD_BYTES = 10 * 1024 * 1024
+MAX_TRAINING_DATA_BYTES = 500 * 1024 * 1024
+MAGIC_SIGS = [
+    (0, b"\xff\xd8\xff"),
+    (0, b"\x89PNG\r\n\x1a\n"),
+    (0, b"GIF8"),
+    (0, b"RIFF"),
+    (4, b"ftyp"),
+]
+TRAINING_DATA_LOCK = asyncio.Lock()
 
 @app.get("/", response_class=HTMLResponse)
 def index(request: Request) -> HTMLResponse:
@@ -119,9 +130,9 @@ def _to_oklab_user_selected(colors_list) -> list[dict]:
         if isinstance(color, str):
             r, g, b = hex_to_rgb(color)
         elif isinstance(color, dict) and {"r", "g", "b"}.issubset(color.keys()):
-            r = int(color["r"])
-            g = int(color["g"])
-            b = int(color["b"])
+            r = max(0, min(255, int(color["r"])))
+            g = max(0, min(255, int(color["g"])))
+            b = max(0, min(255, int(color["b"])))
         else:
             raise ValueError(f"Invalid selected color payload at index {i - 1}: {color}")
 
@@ -187,6 +198,45 @@ def _write_pretty_json_with_inline_oklab(path: Path, data) -> None:
         f.write(text + "\n")
 
 
+async def _save_upload_to_temp(image: UploadFile) -> str:
+    suffix = Path(image.filename or "").suffix.lower() or ".png"
+    fd, temp_path = tempfile.mkstemp(suffix=suffix)
+    os.close(fd)
+
+    total_bytes = 0
+    header = b""
+
+    try:
+        await image.seek(0)
+        async with aiofiles.open(temp_path, "wb") as buffer:
+            while True:
+                chunk = await image.read(1024 * 1024)
+                if not chunk:
+                    break
+
+                if len(header) < 12:
+                    header += chunk[: 12 - len(header)]
+
+                total_bytes += len(chunk)
+                if total_bytes > MAX_UPLOAD_BYTES:
+                    raise ValueError("Uploaded image exceeds 10MB.")
+
+                await buffer.write(chunk)
+
+        if total_bytes == 0:
+            raise ValueError("Uploaded image is empty.")
+
+        if not any(header[offset:offset + len(signature)] == signature for offset, signature in MAGIC_SIGS):
+            raise ValueError("Uploaded file is not a valid image.")
+
+        await image.seek(0)
+        return temp_path
+    except Exception:
+        if os.path.exists(temp_path):
+            os.remove(temp_path)
+        raise
+
+
 @app.post("/api/extract", response_class=HTMLResponse)
 async def api_extract(
     request: Request,
@@ -201,12 +251,10 @@ async def api_extract(
     if method not in {"gwo", "saliency", "k-means"}:
         return HTMLResponse("<div class='text-red-500'>Invalid extraction method</div>", status_code=400)
 
-    fd, temp_path = tempfile.mkstemp(suffix=".png")
-    os.close(fd)
+    temp_path = None
 
     try:
-        with open(temp_path, "wb") as buffer:
-            shutil.copyfileobj(image.file, buffer)
+        temp_path = await _save_upload_to_temp(image)
 
         if method == "saliency":
             colors = await run_in_threadpool(extract_top10_saliency, temp_path, 10)
@@ -214,6 +262,8 @@ async def api_extract(
             colors = await run_in_threadpool(extract_top10_kmeans, temp_path, 10)
         else:
             colors = await run_in_threadpool(extract_top10_gwo, temp_path, 10)
+    except ValueError as e:
+        return HTMLResponse(f"<div class='text-red-500'>{e}</div>", status_code=400)
 
     except Exception:
         tb = traceback.format_exc()
@@ -223,7 +273,7 @@ async def api_extract(
             status_code=500,
         )
     finally:
-        if os.path.exists(temp_path):
+        if temp_path and os.path.exists(temp_path):
             os.remove(temp_path)
 
     palette = [
@@ -266,12 +316,10 @@ async def api_record(
     if not image:
         return JSONResponse({"detail": "No image uploaded"}, status_code=400)
 
-    fd, temp_path = tempfile.mkstemp(suffix=".png")
-    os.close(fd)
+    temp_path = None
 
     try:
-        with open(temp_path, "wb") as buffer:
-            shutil.copyfileobj(image.file, buffer)
+        temp_path = await _save_upload_to_temp(image)
 
         # Run core extraction algorithms and serialize results in Oklab format.
         gwo_task = run_in_threadpool(extract_top10_gwo, temp_path, 10)
@@ -320,26 +368,32 @@ async def api_record(
         }
 
         data_file = Path(__file__).resolve().parent.parent / "training_data.json"
-        
-        all_data = []
-        if data_file.exists():
-            try:
-                with open(data_file, "r", encoding="utf-8") as f:
-                    all_data = json.load(f)
-            except Exception as e:
-                logger.error(f"Error reading training_data.json: {e}")
-                all_data = []
 
-        all_data.append(record)
+        async with TRAINING_DATA_LOCK:
+            if data_file.exists() and data_file.stat().st_size > MAX_TRAINING_DATA_BYTES:
+                return JSONResponse({"detail": "training_data.json exceeds 500MB"}, status_code=507)
 
-        _write_pretty_json_with_inline_oklab(data_file, all_data)
+            all_data = []
+            if data_file.exists():
+                try:
+                    with open(data_file, "r", encoding="utf-8") as f:
+                        all_data = json.load(f)
+                except Exception as e:
+                    logger.error(f"Error reading training_data.json: {e}")
+                    all_data = []
+
+            all_data.append(record)
+
+            _write_pretty_json_with_inline_oklab(data_file, all_data)
 
         return JSONResponse({"status": "success", "message": "Record saved"})
+    except ValueError as e:
+        return JSONResponse({"detail": str(e)}, status_code=400)
 
     except Exception:
         tb = traceback.format_exc()
         logger.error("[RECORD ERROR]\n%s", tb)
         return JSONResponse({"detail": str(tb)}, status_code=500)
     finally:
-        if os.path.exists(temp_path):
+        if temp_path and os.path.exists(temp_path):
             os.remove(temp_path)
