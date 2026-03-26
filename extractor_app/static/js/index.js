@@ -9,6 +9,7 @@ function paletteApp() {
         selectedColors: [],
         extractedColors: [],
         maxColors: 10,
+        dragIndex: null,
 
         handleFile(e) {
             const file = e.target.files[0];
@@ -46,6 +47,29 @@ function paletteApp() {
 
         removeColor(i) {
             this.selectedColors.splice(i,1);
+        },
+
+        moveColor(from, to) {
+            if (from === to) return;
+            if (from < 0 || to < 0) return;
+            if (from >= this.selectedColors.length || to >= this.selectedColors.length) return;
+
+            const [moved] = this.selectedColors.splice(from, 1);
+            this.selectedColors.splice(to, 0, moved);
+        },
+
+        startDrag(i) {
+            this.dragIndex = i;
+        },
+
+        dropOn(i) {
+            if (this.dragIndex === null) return;
+            this.moveColor(this.dragIndex, i);
+            this.dragIndex = null;
+        },
+
+        clearDrag() {
+            this.dragIndex = null;
         },
 
         async recordData() {

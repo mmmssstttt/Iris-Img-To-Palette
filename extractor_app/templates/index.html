@@ -100,11 +100,45 @@
       <div class="flex flex-wrap gap-4">
         <!-- SELECTED -->
         <template x-for="(c,i) in selectedColors" :key="i">
-          <div
-            class="w-16 h-16 rounded-full cursor-pointer"
-            :style="'background:'+c"
-            @click="removeColor(i)"
-          >
+          <div class="flex flex-col items-center gap-2">
+            <div class="relative">
+              <div
+                class="w-16 h-16 rounded-full cursor-move"
+                :class="{ 'ring-2 ring-green-400 ring-offset-2 ring-offset-[#252525]': dragIndex === i }"
+                :style="'background:'+c"
+                draggable="true"
+                @dragstart="startDrag(i)"
+                @dragover.prevent
+                @drop.prevent="dropOn(i)"
+                @dragend="clearDrag()"
+                :title="'Drag to reorder: '+c"
+              >
+              </div>
+
+              <button
+                type="button"
+                class="absolute -top-2 -right-2 w-5 h-5 rounded-full bg-black/70 text-white text-xs leading-5"
+                @click="removeColor(i)"
+                title="Remove"
+              >X</button>
+            </div>
+
+            <div class="flex gap-1">
+              <button
+                type="button"
+                class="px-2 py-0.5 rounded bg-[#333] text-xs disabled:opacity-30"
+                @click="moveColor(i, i - 1)"
+                :disabled="i === 0"
+                title="Move left"
+              >L</button>
+              <button
+                type="button"
+                class="px-2 py-0.5 rounded bg-[#333] text-xs disabled:opacity-30"
+                @click="moveColor(i, i + 1)"
+                :disabled="i === selectedColors.length - 1"
+                title="Move right"
+              >R</button>
+            </div>
           </div>
         </template>
 
