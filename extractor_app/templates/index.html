@@ -30,6 +30,7 @@
   <div class="max-w-4xl mx-auto flex flex-col items-center"
     x-data="paletteApp()"
     @pick-color.window="addColor($event.detail)"
+    @set-extracted.window="setExtracted($event.detail)"
   >
     <h1 class="text-3xl font-bold mb-8">Core Colors Extraction</h1>
 
@@ -43,12 +44,10 @@
 
       hx-on::before-request="
         loading = true;
-        $refs.submitBtn.disabled = true;
       "
 
       hx-on::after-request="
         loading = false;
-        $refs.submitBtn.disabled = false;
       "
     >
       <!-- METHOD -->
@@ -74,7 +73,7 @@
       </label>
 
       <button type="submit"
-        x-ref="submitBtn"
+        :disabled="loading"
         class="w-full bg-green-600 py-3 rounded-xl">
         <span x-show="!loading">Extract Colors</span>
         <span x-show="loading">Extracting...</span>
@@ -158,7 +157,7 @@
         const colors = [...this.querySelectorAll('[data-color]')]
             .map(el => el.dataset.color);
 
-        $data.setExtracted(colors);
+        window.dispatchEvent(new CustomEvent('set-extracted', { detail: colors }));
       "
     ></div>
   </div>
