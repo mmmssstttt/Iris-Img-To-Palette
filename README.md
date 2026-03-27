@@ -7,7 +7,7 @@
 <br>
 <img src="https://github.com/moosh0114/Iris-img-to-palette/blob/main/logo/logo.png" alt="Iris-Color-Processor" style="height: 280px; width: auto;" />
 
-### Refinement Network for Image Color-Extraction
+### Iris - Refinement Network for Image Color-Extraction
 
 IMPORTANT : This project is still in the development and testing stages, licensing terms may be updated in the future. Please don't do any commercial usage currently.
 
@@ -16,6 +16,7 @@ IMPORTANT : This project is still in the development and testing stages, licensi
 [![PyTorch](https://img.shields.io/badge/PyTorch-EE4C2C?style=for-the-badge&logo=pytorch&logoColor=white)](https://github.com/pytorch/pytorch)
 [![OpenCV](https://img.shields.io/badge/OpenCV-5C3EE8?style=for-the-badge&logo=opencv&logoColor=white)](https://github.com/opencv/opencv)
 [![scikit-learn](https://img.shields.io/badge/scikit_learn-F7931E?style=for-the-badge&logo=scikitlearn&logoColor=white)](https://github.com/scikit-learn/scikit-learn)
+[![SciPy](https://img.shields.io/badge/SciPy-8CAAE6?style=for-the-badge&logo=scipy&logoColor=white)](https://github.com/scipy/scipy)
 [![FastAPI](https://img.shields.io/badge/FastAPI-009688?style=for-the-badge&logo=fastapi&logoColor=white)](https://github.com/fastapi/fastapi)
 
 **( GUI )**
@@ -64,10 +65,26 @@ uv run python -m scripts.extract_colors
 
 ## How To Train
 
-### Training via GUI
+### Training via GUI ( Recommended )
 
 ```shell
 python -m uv run uvicorn extractor_app.main:app --reload
+```
+
+### Training via CLI / Shell command
+
+prepare your training data & at CDM, run below to train model : 
+
+```shell
+python -m uv run python -m scripts.train_palette_selector --data training_data.json
+```
+
+your model will be saved to `models/palette_scorer.pth`
+
+and run below to predict : 
+
+```shell
+python -m uv run python -m scripts.predict_palette_selector --data training_data.json
 ```
 
 ## Project Dependencies Details

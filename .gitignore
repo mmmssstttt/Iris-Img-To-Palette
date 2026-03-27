@@ -1,6 +1,9 @@
 # Training Data
 training_data.json
 
+# AI Models
+/models/*
+
 # Python
 __pycache__/
 *.py[cod]
