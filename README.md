@@ -35,6 +35,8 @@ Iris uses uv for dependency and environment management. uv has multiple licenses
 
 Iris uses Alpine.js, HTMX & Tailwind CSS for GUI showing. Alpine.js & Tailwind CSS licensed under the MIT License. HTMX licensed under Zero-Clause BSD License.
 
+![1.0predictions](https://github.com/mmmssstttt/Iris-Img-To-Palette/blob/main/training_showcase/Iris1.0_predictions.png)
+
 ## Quickstart ( GUI )
 
 **Build Dependencies ( Install uv )**
