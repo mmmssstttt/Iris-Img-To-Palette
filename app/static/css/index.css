@@ -299,15 +299,14 @@ textarea {
 }
 
 .iris-theme-track {
-    width: 68px;
+    width: 72px;
     height: 32px;
     border-radius: 999px;
     border: 1px solid var(--primary-color-four);
-    background: color-mix(in srgb, var(--primary-color) 74%, #ffffff 26%);
+    background: color-mix(in srgb, var(--primary-color) 85%, #ffffff 15%);
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0 10px;
     position: relative;
     color: var(--primary-color-two);
 }
@@ -325,13 +324,12 @@ textarea {
     width: 24px;
     height: 24px;
     border-radius: 999px;
-    background: color-mix(in srgb, #ffffff 86%, var(--primary-color-two) 14%);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.16);
+    background: #ffffff;
     transition: transform 0.35s ease;
 }
 
 .iris-theme-knob.on {
-    transform: translateX(35px);
+    transform: translateX(38px);
 }
 
 .iris-preview-pop {
