@@ -34,14 +34,6 @@ textarea {
     font: inherit;
 }
 
-.iris-shadow-main {
-    box-shadow: 5px 5px 0px 0px rgba(0, 0, 0, 0.2);
-}
-
-.iris-rounded-img-exist {
-    border-radius: 16px 16px 16px 220px;
-}
-
 .iris-bg-gradient-default {
     background: linear-gradient(120deg, var(--primary-color) 30%, var(--mid-band) 30% 70%, var(--primary-color) 70%);
 }
@@ -179,14 +171,6 @@ textarea {
 .iris-side-strip:disabled {
     opacity: 0.35;
     pointer-events: none;
-}
-
-.iris-side-strip-left {
-    cursor: w-resize;
-}
-
-.iris-side-strip-right {
-    cursor: e-resize;
 }
 
 .iris-theme-host {
@@ -351,10 +335,6 @@ textarea {
 
 .iris-swatch-fade-out {
     animation: irisSwatchFadeOut var(--palette-shift-duration) ease forwards;
-}
-
-.iris-extract-label {
-    color: var(--extract-color);
 }
 
 @keyframes irisPreviewPop {

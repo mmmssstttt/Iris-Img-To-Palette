@@ -35,6 +35,30 @@
       @utility palette-label {
         @apply relative z-[1] text-white;
       }
+
+      @utility iris-shadow-main {
+        @apply shadow-[5px_5px_0px_0px_rgba(0,0,0,0.2)];
+      }
+
+      @utility iris-rounded-img-exist {
+        @apply rounded-[16px_16px_16px_220px];
+      }
+
+      @utility iris-extract-label {
+        @apply text-[var(--extract-color)];
+      }
+
+      @utility iris-side-strip-left {
+        @apply cursor-w-resize;
+      }
+
+      @utility iris-side-strip-right {
+        @apply cursor-e-resize;
+      }
+
+      @utility iris-nav-btn {
+        @apply absolute top-1/2 -translate-y-1/2 h-15 w-15 rounded-full bg-black/45 text-white text-2xl;
+      }
     </style>
 </head>
 <body class="overflow-hidden">
@@ -108,7 +132,7 @@
             <img :src="previewUrl" alt="preview" class="relative z-20 max-h-full max-w-[74%] rounded-2xl object-contain select-none" :class="[previewAnimating ? 'iris-preview-pop' : '', previewSlideClass]" draggable="false" />
             <button
               type="button"
-              class="iris-nav-btn absolute left-2 top-1/2 -translate-y-1/2 h-15 w-15 rounded-full bg-black/45 text-white text-2xl"
+              class="iris-nav-btn left-2"
               :disabled="!(totalFiles > 1 && currentIndex > 0)"
               :class="(totalFiles > 1 && currentIndex > 0) ? 'opacity-100' : 'opacity-35'"
               @pointerdown.prevent="startNavHold(-1, $event)"
@@ -122,7 +146,7 @@
             </button>
             <button
               type="button"
-              class="z-[5] absolute right-2 top-1/2 -translate-y-1/2 h-15 w-15 rounded-full bg-black/45 text-white text-2xl"
+              class="iris-nav-btn right-2 z-[5]"
               :disabled="!(totalFiles > 1 && currentIndex < (totalFiles - 1))"
               :class="(totalFiles > 1 && currentIndex < (totalFiles - 1)) ? 'opacity-100' : 'opacity-35'"
               @pointerdown.prevent="startNavHold(1, $event)"
