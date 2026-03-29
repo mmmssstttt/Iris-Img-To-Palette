@@ -17,16 +17,8 @@
       </button>
     </div>
 
-    <div class="iris-extract-group order-1 lg:order-2 flex flex-row items-center gap-3 uppercase tracking-wide">
+    <div class="iris-extract-group order-1 lg:order-2 max-md:mt-5 flex flex-row flex-wrap items-center gap-3 uppercase tracking-wide">
       <span class="text-2xl iris-extract-label">Extract</span>
-      <select
-        class="h-10 rounded-md border border-[var(--primary-color-four)] bg-[var(--action-btn-bg)] px-2 text-sm uppercase tracking-wide text-[var(--action-btn-fg)] focus:outline-none duration-700 cursor-pointer"
-        x-model="extractMethod"
-        aria-label="Extraction method"
-      >
-        <option value="kmeans">KMeans</option>
-        <option value="model">Model</option>
-      </select>
       <button
         type="button"
         class="btn-num-control"
@@ -51,6 +43,14 @@
         <span class="text-2xl"> + </span>
       </button>
       <span class="text-2xl iris-extract-label">Color</span>
+      <select
+        class="h-10 rounded-md border border-[var(--primary-color-four)] bg-[var(--action-btn-bg)] px-2 text-sm uppercase tracking-wide text-[var(--action-btn-fg)] focus:outline-none duration-700 cursor-pointer"
+        x-model="extractMethod"
+        aria-label="Extraction method"
+      >
+        <option value="kmeans">KMeans</option>
+        <option value="model">Model</option>
+      </select>
     </div>
 
     <button

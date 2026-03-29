@@ -29,11 +29,11 @@
       }
 
       @utility iris-side-strip {
-        @apply border-0 bg-transparent z-[6];
+        @apply border-0 bg-transparent z-6;
       }
 
       @utility palette-label {
-        @apply relative z-[1] text-white;
+        @apply relative z-1 text-white;
       }
 
       @utility iris-shadow-main {
@@ -48,22 +48,14 @@
         @apply text-[var(--extract-color)];
       }
 
-      @utility iris-side-strip-left {
-        @apply cursor-w-resize;
-      }
-
-      @utility iris-side-strip-right {
-        @apply cursor-e-resize;
-      }
-
       @utility iris-nav-btn {
         @apply absolute top-1/2 -translate-y-1/2 h-15 w-15 rounded-full bg-black/45 text-white text-2xl;
       }
     </style>
 </head>
 <body class="overflow-hidden">
-  <div class="iris-theme-host w-full max-w-320 mx-auto p-3 md:p-4 h-screen relative" x-data="uploader()">
-    <button type="button" class="border-0 bg-transparent absolute right-4 top-3 z-30" @click="toggleTheme()"
+  <div class="iris-theme-host w-full max-w-320 mx-auto flex flex-col justify-center p-3 md:p-4 h-screen relative" x-data="uploader()">
+    <button type="button" class="self-end mt-1 mb-4 border-0 bg-transparent z-30" @click="toggleTheme()"
       :aria-pressed="isDark ? 'true' : 'false'">
       <span class="flex justify-between cursor-pointer px-1.5 iris-theme-track" role="presentation">
         <span class="text-[11px] leading-none">
@@ -81,26 +73,26 @@
         <span class="iris-theme-knob" :class="isDark ? 'on' : ''"></span>
       </span>
     </button>
-      <form
-        id="extract-form"
-        class="flex h-full flex-col gap-3 pt-12 pb-44 lg:pb-0"
-        hx-post="/api/extract"
-        hx-target="#result"
-        hx-swap="innerHTML"
-        enctype="multipart/form-data"
-        @pointerup.window="stopAdjust()"
-        @pointercancel.window="stopAdjust()"
-      >
-        <input
-          x-ref="fileInput"
-          id="image-upload"
-          class="hidden"
-          name="images"
-          type="file"
-          multiple
-          accept="image/*"
-          @change="onPick($event)"
-        />
+    <form
+      id="extract-form"
+      class="flex h-full flex-col gap-3 pb-44 lg:pb-0"
+      hx-post="/api/extract"
+      hx-target="#result"
+      hx-swap="innerHTML"
+      enctype="multipart/form-data"
+      @pointerup.window="stopAdjust()"
+      @pointercancel.window="stopAdjust()"
+    >
+      <input
+        x-ref="fileInput"
+        id="image-upload"
+        class="hidden"
+        name="images"
+        type="file"
+        multiple
+        accept="image/*"
+        @change="onPick($event)"
+      />
 
       <input type="hidden" name="n_colors" x-model="nColors" />
       <input type="hidden" name="current_index" :value="currentIndex" />
@@ -146,7 +138,7 @@
             </button>
             <button
               type="button"
-              class="iris-nav-btn right-2 z-[5]"
+              class="iris-nav-btn right-2 z-5"
               :disabled="!(totalFiles > 1 && currentIndex < (totalFiles - 1))"
               :class="(totalFiles > 1 && currentIndex < (totalFiles - 1)) ? 'opacity-100' : 'opacity-35'"
               @pointerdown.prevent="startNavHold(1, $event)"
