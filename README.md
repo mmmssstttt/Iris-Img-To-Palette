@@ -41,6 +41,38 @@ Iris uses Alpine.js, HTMX, Jinja & Tailwind CSS for GUI showing. Alpine.js & Tai
 
 ![1.0predictions](https://github.com/mmmssstttt/Iris-Img-To-Palette/blob/main/training_showcase/Iris1.0_predictions.png)
 
+## How It Works
+
+### Step 1. Collect candidate colors from different algorithms
+
+1. GWO : GWO excels at finding the global optimum, ensuring more accurate color extraction without getting trapped in local minima.
+
+2. Saliecy : Saliency filters out redundant background pixels, ensuring color extraction is driven by visual prominence rather than spatial frequency.
+
+3. K-means : K-means ensures a balanced representation by minimizing the total intra-cluster variance, partitioning the entire color space comprehensively.
+
+### Step 2. Collect different features from Image, for AI Training
+
+1. physical area ratio
+
+2. similar color area sum
+
+3. chroma saliency
+
+4. lightness ratio
+
+5. dominant main color ranking
+
+6. vividness ranking
+
+7. brightness ranking
+
+### step 3. Training
+
+AI will learn how to rank the candidate colors ( from Step 1. ) based on Step 2. Image Features.
+
+Final Outcome is the Top 10 main colors ( after these steps the rank will be more close to human eyes ) from the input image.
+
 ## Quickstart ( GUI )
 
 **Build Dependencies ( Install uv )**
