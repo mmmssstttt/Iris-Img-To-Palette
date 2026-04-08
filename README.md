@@ -67,7 +67,7 @@ Iris uses Alpine.js, HTMX, Jinja & Tailwind CSS for GUI showing. Alpine.js & Tai
 
 7. brightness ranking
 
-### step 3. Training
+### Step 3. Training
 
 AI will learn how to rank the candidate colors ( from Step 1. ) based on Step 2. Image Features.
 
