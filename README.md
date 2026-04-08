@@ -29,11 +29,11 @@ IMPORTANT : This project is still in the development and testing stages, licensi
 
 **[ for Dependencies Details please see the end of this README ]**
 
-Iris uses FastAPI for backend APIs and GUI integration, and uses scikit-learn & OpenCV for image color extraction, leverages K-Means clustering, and outputs results in the OKLCH color space to ensure perceptual uniformity and high-fidelity color analysis. FastAPI is MIT licensed, scikit-learn is licensed under the BSD 3-Clause License, OpenCV is licensed under the Apache-2.0 License.
+Iris uses PyTorch for AI Model Building. PyTorch licensed under BSD 3-Clause License.
 
-Iris uses uv for dependency and environment management. uv has multiple licenses.
+Iris uses FastAPI for backend APIs and GUI integration, and uses scikit-learn, SciPy & OpenCV for image color extraction. FastAPI is MIT licensed, scikit-learn & SciPy licensed under the BSD 3-Clause License, OpenCV is licensed under the Apache-2.0 License.
 
-Iris uses Alpine.js, HTMX & Tailwind CSS for GUI showing. Alpine.js & Tailwind CSS licensed under the MIT License. HTMX licensed under Zero-Clause BSD License.
+Iris uses Alpine.js, HTMX, Jinja & Tailwind CSS for GUI showing. Alpine.js & Tailwind CSS licensed under the MIT License. HTMX licensed under Zero-Clause BSD License. Jinja licensed under BSD 3-Clause License.
 
 ![gui](https://github.com/mmmssstttt/Iris-Img-To-Palette/blob/main/training_showcase/Iris1.0_gui.png)
 
@@ -64,12 +64,6 @@ Open `http://127.0.0.1:8000`
 
 Keyboard : `ArrowUp/ArrowDown` adjust `n_colors`, `Enter` submit, `ArrowLeft/ArrowRight` switch preview image.
 
-## Run Script ( CLI )
-
-```shell
-uv run python -m scripts.extract_colors
-```
-
 ## How To Train
 
 ### Training via GUI ( Recommended )
@@ -96,22 +90,28 @@ python -m uv run python -m scripts.predict_palette_selector --data training_data
 
 ## Project Dependencies Details
 
+PyTorch License : [https://github.com/pytorch/pytorch/blob/main/LICENSE](https://github.com/pytorch/pytorch/blob/main/LICENSE)
+<br>
+
 FastAPI License : [https://github.com/fastapi/fastapi/blob/master/LICENSE](https://github.com/fastapi/fastapi/blob/master/LICENSE)
 <br>
 
 scikit-learn License : [https://github.com/scikit-learn/scikit-learn?tab=BSD-3-Clause-1-ov-file#readme](https://github.com/scikit-learn/scikit-learn?tab=BSD-3-Clause-1-ov-file#readme)
 <br>
 
-OpenCV License : [https://github.com/opencv/opencv/blob/4.x/LICENSE](https://github.com/opencv/opencv/blob/4.x/LICENSE)
+SciPy License : [https://github.com/scipy/scipy/blob/main/LICENSE.txt](https://github.com/scipy/scipy/blob/main/LICENSE.txt)
 <br>
 
-uv License : [https://github.com/astral-sh/uv/blob/main/LICENSE-MIT](https://github.com/astral-sh/uv/blob/main/LICENSE-MIT) & another Apache-2.0 [License](https://github.com/astral-sh/uv/blob/main/LICENSE-APACHE)
+OpenCV License : [https://github.com/opencv/opencv/blob/4.x/LICENSE](https://github.com/opencv/opencv/blob/4.x/LICENSE)
 <br>
 
 Alpine.js License : [https://github.com/alpinejs/alpine/blob/main/LICENSE.md](https://github.com/alpinejs/alpine/blob/main/LICENSE.md)
 <br>
 
 HTMX License : [https://github.com/bigskysoftware/htmx/blob/master/LICENSE](https://github.com/bigskysoftware/htmx/blob/master/LICENSE)
+<br>
+
+Jinja License : [https://github.com/pallets/jinja/blob/main/LICENSE.txt](https://github.com/pallets/jinja/blob/main/LICENSE.txt)
 <br>
 
 Tailwind CSS License : [https://github.com/tailwindlabs/tailwindcss/blob/main/LICENSE](https://github.com/tailwindlabs/tailwindcss/blob/main/LICENSE)
